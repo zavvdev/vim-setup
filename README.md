@@ -102,6 +102,8 @@ Leader key: `Space`
 
 12. Split vertically: `v`
 
+13. Toggle autocomplete in insert mode: `Shift Tab`
+
 ### Git Merge Conflicts
 
 If merge has conflicts:

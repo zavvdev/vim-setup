@@ -144,6 +144,9 @@ set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
 vnoremap <leader>aa <C-v>A
 vnoremap <leader>ar <C-v>
 
+" Autocompletion alias
+inoremap <S-Tab> <C-n>
+
 " Disable top banner
 let g:netrw_banner = 0
 
