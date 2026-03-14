@@ -131,14 +131,14 @@ see it in `.vimrc` file by searching for **LSP CONFIG**.
 Since LSP is not supported by Vim out of the box, you need to either use plugin
 manager or install lsp manually by doing:
 
-1. `mkdir -p ~/.vim/pack/lsp/start`
+1. `mkdir -p ~/.vim/pack/vendor/start`
 
-2. `cd ~/.vim/pack/lsp/start`
+2. `cd ~/.vim/pack/vendor/start`
 
 3. `git clone https://github.com/prabirshrestha/vim-lsp.git`
 
 This is basically how you can install any plugin by just cloning repo to that
-directory.
+directory. You can name "vendor" however you want.
 
 How to install LSP for Rust and JS/TS:
 
