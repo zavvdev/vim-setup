@@ -146,6 +146,7 @@ vnoremap <leader>ar <C-v>
 
 " Autocompletion alias
 inoremap <S-Tab> <C-n>
+set complete=.,w,b,u,t
 
 " Disable top banner
 let g:netrw_banner = 0
