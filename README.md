@@ -242,6 +242,10 @@ If merge has conflicts:
 
 **`.** - go to the position of the last change in this file
 
+`g,` - go to newer position in change list
+
+`g;` - go to older position in change list
+
 ### Macros
 
 `qa` - record macro a
