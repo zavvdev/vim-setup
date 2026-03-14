@@ -1,10 +1,72 @@
-" Disable compatibility with vi editor
-" in order to use modern Vim features
+" Disable compatibility with vi editor in order to use modern Vim features
 set nocompatible
 
 " Setup leader symbol
 nnoremap <SPACE> <Nop>
 let mapleader=" "
+
+" Enable mouse support 
+set mouse=a
+
+" Enable syntax
+syntax enable
+
+" Configure indentation
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set autoindent
+set textwidth=80
+
+" Highlight current line
+set cursorline
+:highlight Cursorline cterm=bold ctermbg=black
+
+" Enable highlight search pattern
+set hlsearch
+
+" Enable smartcase search sensitivity
+set ignorecase
+set smartcase
+
+" Enable relative line numbers
+set number
+set relativenumber
+
+" Show the matching part of pairs [] {} and ()
+set showmatch
+
+" Remove trailing whitespace from Python, JavaScript, TypeScript, JSX, TSX, CSS, HTML and Rust files
+autocmd BufWritePre *.py :%s/\s\+$//e
+autocmd BufWritePre *.js :%s/\s\+$//e
+autocmd BufWritePre *.ts :%s/\s\+$//e
+autocmd BufWritePre *.jsx :%s/\s\+$//e
+autocmd BufWritePre *.tsx :%s/\s\+$//e
+autocmd BufWritePre *.css :%s/\s\+$//e
+autocmd BufWritePre *.html :%s/\s\+$//e
+autocmd BufWritePre *.rs :%s/\s\+$//e
+
+" Enable color themes
+if !has('gui_running')
+	set t_Co=256
+endif
+
+" Enable true colors support
+set termguicolors
+
+" Colorscheme
+colorscheme shine
+
+set updatetime=800
+set showmode
+
+" Configure status line
+set laststatus=2
+set statusline=%f\
+set statusline+=%h%w%m%r\
+set statusline+=%=
+set statusline+=%(%l,%c%V\ %=\ %P%)
 
 " Show type definitions (probably works with C and some others)
 nnoremap K :ptag <cword><CR>
@@ -15,15 +77,22 @@ nnoremap K :ptag <cword><CR>
 " If you want to go to definition in the same file
 " vim also has native feature for it. Put cursor on
 " variable/function etc and press gd.
-set path+=$PWD/**      " Search all subdirectories
-set wildmenu           " Visual menu for command completion
+
+" Search all subdirectories
+set path+=$PWD/**
+" Visual menu for command completion
+set wildmenu
+
 " wildignore only removes entries from the wildmenu
 " after entries have been found; it does not change search times
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
 set wildignorecase
+
 set gp=git\ grep\ -n
+
 " Should contain space after :grep
 nnoremap <leader>sfg :grep 
+
 " Just press Enter after performing grep search and it
 " will automatically run :copen
 augroup quickfix
@@ -41,17 +110,22 @@ augroup END
 " corresponding changes.
 nnoremap <leader>dvc :!git mergetool<CR> 
 
-" Files navigation
+" File navigation
+
 " List all previously opened files available in the buffer
 " Should contain space after :b
 nnoremap <leader>? :b 
+
 " Open prev file in the buffer
 nnoremap <leader>, :bp <CR>
+
 " Open next file in the buffer
 nnoremap <leader>. :bp <CR>
+
 " Search for file
 " Should contain space after :find
 nnoremap <leader>sf :find 
+
 " Search with inline path
 " Should contain space after :e
 nnoremap <leader>sp :e 
@@ -78,25 +152,7 @@ let &t_SI = "\e[5 q"
 let &t_SR = "\e[3 q"
 let &t_EI = "\e[1 q"
 
-" Cosmetic setup
-colorscheme morning
-syntax enable
-set expandtab
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
-set number
-set autoindent
-set updatetime=800
-set relativenumber
-set showmode
-set laststatus=2                    " Always show status line
-set statusline=%f\                  " Show filename
-set statusline+=%h%w%m%r\           " Show flags
-set statusline+=%=                  " Align right
-set statusline+=%(%l,%c%V\ %=\ %P%) " Show ruler
-
-" Netrw setup start
+" Netrw setup
 nnoremap <leader>e :Explore<CR>
 nnoremap <leader>v :Vexplore<CR>
 nnoremap <leader>h :Hexplore<CR>
@@ -156,9 +212,8 @@ augroup netrw_mapping
   autocmd!
   autocmd filetype netrw call NetrwMapping()
 augroup END
-" Netrw setup end
 
-" Git branch in status line
+" Setup git branch in status line
 function! GitBranch()
   let branch = system("git -C " . expand('%:p:h') . " branch --show-current 2>/dev/null")
   return substitute(branch, '\n', '', '')
