@@ -236,9 +236,9 @@ If merge has conflicts:
 
 `ma` - set current position for mark A
 
-`\`a` - jump to position of mark A
+**`a** - jump to position of mark A
 
-`\`.` - go to the position of the last change in this file
+**`.** - go to the position of the last change in this file
 
 ### Macros
 
