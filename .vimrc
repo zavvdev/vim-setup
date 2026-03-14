@@ -21,7 +21,7 @@ set textwidth=80
 
 " Highlight current line
 set cursorline
-:highlight Cursorline cterm=bold ctermbg=black
+highlight Cursorline cterm=bold ctermbg=black
 
 " Enable highlight search pattern
 set hlsearch
