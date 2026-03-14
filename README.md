@@ -1,6 +1,6 @@
 # Vim Setup
 
-No plugins used
+Minimal setup.
 
 ## Prerequisites
 
@@ -13,6 +13,9 @@ No plugins used
 4. Run `git config --global merge.tool vimdiff` to assign merge tool to vimdiff.
 
 5. Run `git config --global mergetool.keepBackup false` to disable backup files.
+
+6. For LSP support see [LSP
+section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp).
 
 ## Keybindings
 
@@ -94,15 +97,13 @@ Leader key: `Space`
 
 8. Remove multiline prefix: `Leader a r, select prefix, x`
 
-9. Hover over variable/function for showing details: `K` (probably works for C lang only)
+9. Go to definition: `g d`
 
-10. Go to definition: `g d`
+10. Follow path: `g f`
 
-11. Follow path: `g f`
+11. Split vertically: `v`
 
-12. Split vertically: `v`
-
-13. Toggle autocomplete in insert mode: `Shift Tab`
+12. Toggle autocomplete in insert mode: `Shift Tab`
 
 ### Git Merge Conflicts
 
@@ -121,6 +122,50 @@ If merge has conflicts:
 6. Put difference (to other buffer): `dp`
 
 7. Use `:diffget N` where N is the number of screen with specific changes to accept that changes.
+
+## LSP
+
+This config includes lsp support for Rust, JavaScript and TypeScript. You can
+see it in `.vimrc` file by searching for **LSP CONFIG**.
+
+Since LSP is not supported by Vim out of the box, you need to either use plugin
+manager or install lsp manually by doing:
+
+1. `mkdir -p ~/.vim/pack/lsp/start`
+
+2. `cd ~/.vim/pack/lsp/start`
+
+3. `git clone https://github.com/prabirshrestha/vim-lsp.git`
+
+This is basically how you can install any plugin by just cloning repo to that
+directory.
+
+How to install LSP for Rust and JS/TS:
+
+1. `rustup component add rust-analyzer`
+
+2. `npm install -g typescript typescript-language-server`
+
+After doing this, lsp should work fine.
+
+For more information about LSP configuration see
+[vim-lsp](https://github.com/prabirshrestha/vim-lsp).
+
+**Keybindings**
+
+1. Go to definition: `g d`
+
+2. Show all references to the word under the cursor: `g r`
+
+3. Show type information for the word under the cursor (hover): `K`
+
+4. Rename symbol in current file: `Leader r n`
+
+5. Show code actions: `Leader c a`
+
+6. Show lsp errors in current file: `Leader s i`
+
+7. Apply formatting: `Leader f m`
 
 ## Other useful keybindings
 

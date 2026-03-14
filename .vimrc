@@ -224,3 +224,51 @@ function! GitBranch()
 endfunction
 
 set statusline+=\ [%{GitBranch()}]
+
+" LSP CONFIG
+
+" To install without plugin manager:
+" 1. mkdir -p ~/.vim/pack/lsp/start
+" 2. cd ~/.vim/pack/lsp/start
+" 3. git clone https://github.com/prabirshrestha/vim-lsp.git
+
+" Lsp for rust.
+" Install rust-analyzer globally: rustup component add rust-analyzer
+if executable('rust-analyzer')
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'rust-analyzer',
+      \ 'cmd': {server_info->['rust-analyzer']},
+      \ 'allowlist': ['rust'],
+      \ })
+endif
+
+" Lsp for JS/TS.
+" Install language server globally: npm install -g typescript typescript-language-server
+if executable('typescript-language-server')
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'ts-lsp',
+      \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
+      \ 'allowlist': ['javascript','javascriptreact','typescript','typescriptreact'],
+      \ })
+endif
+
+" Go to definition
+nnoremap gd :LspDefinition<CR>
+
+" Show references to the word under the cursor
+nnoremap gr :LspReferences<CR>
+
+" Show type information (hover)
+nnoremap K :LspHover<CR>
+
+" Rename symbol
+nnoremap <leader>rn :LspRename<CR>
+
+" Code action
+nnoremap <leader>ca :LspCodeAction<CR>
+
+" Show lsp errors in current file
+nnoremap <leader>si :LspDocumentDiagnostics<CR>
+
+" Apply formatting
+nnoremap <leader>fm :LspDocumentFormat<CR>
