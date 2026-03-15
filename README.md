@@ -255,6 +255,9 @@ For more information about LSP configuration see
 
 `.` - repeat last command
 
+`Ctrl v`, `$`, `A`, add something at the end, `Esc` - append to the end of
+multiple lines
+
 ### Marking text (visual mode)
 
 `v` - start visual mode, mark lines, then do a command (like y-yank)
