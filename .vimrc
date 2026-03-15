@@ -92,12 +92,21 @@ set statusline+=\ %r
 set statusline+=\ %l/%L
 
 " Setup git branch in status line
-function! GitBranch()
-  let branch = system("git -C " . expand('%:p:h') . " branch --show-current 2>/dev/null")
-  return substitute(branch, '\n', '', '')
+function! UpdateGitBranch()
+  let dir = expand('%:p:h')
+  if finddir('.git', dir . ';') != ''
+    let b:git_branch = substitute(system('git -C ' . dir . ' branch --show-current'), '\n', '', '')
+  else
+    let b:git_branch = ''
+  endif
 endfunction
 
-set statusline+=\ \ %{GitBranch()}
+augroup gitbranch
+  autocmd!
+  autocmd BufEnter,DirChanged * call UpdateGitBranch()
+augroup END
+
+let &statusline .= '  %{get(b:, "git_branch", "")}'
 
 " Show type definitions (probably works with C and some others)
 nnoremap K :ptag <cword><CR>
