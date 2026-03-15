@@ -117,6 +117,9 @@ Leader key: `Space`
 
 16. Equalize split size: `Leader =`
 
+17. Put cursor in normal mode on number and do `A` to increase number or `X` to
+decrease
+
 ### Git Merge Conflicts
 
 If merge has conflicts:
