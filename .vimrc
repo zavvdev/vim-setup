@@ -18,6 +18,7 @@ set softtabstop=2
 set shiftwidth=2
 set autoindent
 set textwidth=80
+set smartindent
 
 " Spelling checking
 set spelllang=en_us
@@ -66,11 +67,37 @@ set updatetime=800
 set showmode
 
 " Configure status line
+
+" Always show status line
 set laststatus=2
-set statusline=%f\
-set statusline+=%h%w%m%r\
+
+" Show path to current file
+set statusline=%f
+
+" set statusline+=%h%w%m%r\
+
+" Split on the left and right
 set statusline+=%=
+
+" Show row and col info
 set statusline+=%(%l,%c%V\ %=\ %P%)
+
+" Show currently opened file type
+set statusline+=\ %y
+
+" Show if buffer is read-only
+set statusline+=\ %r
+
+" Line number info
+set statusline+=\ %l/%L
+
+" Setup git branch in status line
+function! GitBranch()
+  let branch = system("git -C " . expand('%:p:h') . " branch --show-current 2>/dev/null")
+  return substitute(branch, '\n', '', '')
+endfunction
+
+set statusline+=\ \ %{GitBranch()}
 
 " Show type definitions (probably works with C and some others)
 nnoremap K :ptag <cword><CR>
@@ -225,14 +252,6 @@ augroup netrw_mapping
   autocmd!
   autocmd filetype netrw call NetrwMapping()
 augroup END
-
-" Setup git branch in status line
-function! GitBranch()
-  let branch = system("git -C " . expand('%:p:h') . " branch --show-current 2>/dev/null")
-  return substitute(branch, '\n', '', '')
-endfunction
-
-set statusline+=\ [%{GitBranch()}]
 
 " LSP CONFIG
 
