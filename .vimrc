@@ -158,8 +158,13 @@ let &t_EI = "\e[1 q"
 
 " Netrw setup
 nnoremap <leader>e :Explore<CR>
+
+" Splits
+
 nnoremap <leader>v :Vexplore<CR>
-nnoremap <leader>h :Hexplore<CR>
+nnoremap <leader>> :vertical resize +10<CR>
+nnoremap <leader>< :vertical resize -10<CR>
+nnoremap <leader>= :wincmd =<CR>
 
 function! NetrwMapping()
   " Mark a file

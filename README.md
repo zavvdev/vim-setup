@@ -105,9 +105,17 @@ Leader key: `Space`
 
 10. Follow path: `g f`
 
-11. Split vertically: `v`
+11. Split vertically: `v` on file in netrw
 
-12. Toggle autocomplete in insert mode: `Shift Tab`
+12. Split vertically: `Leader v` from file
+
+13. Toggle autocomplete in insert mode: `Shift Tab`
+
+14. Increase window width: `Leader >`
+
+15. Derease window width: `Leader <`
+
+16. Equalize split size: `Leader =`
 
 ### Git Merge Conflicts
 
