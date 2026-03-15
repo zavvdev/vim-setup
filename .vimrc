@@ -20,6 +20,7 @@ set autoindent
 set textwidth=80
 
 " Spelling checking
+set spelllang=en_us
 set spell
 
 " Highlight current line
