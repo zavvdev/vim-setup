@@ -19,6 +19,9 @@ set shiftwidth=2
 set autoindent
 set textwidth=80
 
+" Spelling checking
+set spell
+
 " Highlight current line
 set cursorline
 highlight Cursorline cterm=bold ctermbg=black
