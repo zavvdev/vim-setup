@@ -15,7 +15,7 @@ Minimal setup.
 5. Run `git config --global mergetool.keepBackup false` to disable backup files.
 
 6. For LSP support see [LSP
-section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp).
+   section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp).
 
 ## Keybindings
 
@@ -64,6 +64,10 @@ Leader key: `Space`
 6. Move one directory above: `-`
 
 7. Open file tree: `Leader e`
+
+8. Open file in a new tab: Place curson on file in netrw and press: `t`
+
+9. Navigate to opened tab by number: `Ngt` where N is a tab number
 
 #### Global Search
 
