@@ -124,7 +124,7 @@ Leader key: `Space`
 17. Put cursor in normal mode on number and do `A` to increase number or `X` to
 decrease
 
-### Git Merge Conflicts
+### Git
 
 If merge has conflicts:
 
@@ -141,6 +141,13 @@ If merge has conflicts:
 6. Put difference (to other buffer): `dp`
 
 7. Use `:diffget N` where N is the number of screen with specific changes to accept that changes.
+
+List uncommited files:
+
+1. Use `Leader d v` to open the list of files that have been changed but not
+commited yet.
+
+2. Put the cursor on the path and press `g f` to open the file.
 
 ## LSP
 

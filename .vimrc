@@ -180,6 +180,13 @@ augroup END
 nnoremap <leader>dvc :!git mergetool<CR> 
 
 " --------------------------------
+" List uncommited changed files
+" --------------------------------
+
+" Put cursor on file path and press gf to open the file
+nnoremap <leader>dv :cexpr system('git diff --name-only')<CR>:copen<CR>
+
+" --------------------------------
 " File explorer settings
 " --------------------------------
 
