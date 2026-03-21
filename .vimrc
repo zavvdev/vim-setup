@@ -1,9 +1,3 @@
-" TODO:
-" - [ ] Persist previously opened file history after vim close.
-" - [ ] Improve search speed.
-" - [ ] Make sure that we can grep search with multiple words without using
-"       quotes.
-
 " --------------------------------
 " Basic settings
 " --------------------------------
