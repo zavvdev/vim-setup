@@ -183,14 +183,45 @@ nnoremap <leader>dvm :!git mergetool<CR>
 " Git file changes
 " --------------------------------
 
-" Put cursor on file path and press gf to open the file
+" After using this binding, put cursor on file path and press gf to open the file
 nnoremap <leader>dv :cexpr system('git diff --name-only')<CR>:copen<CR>
-
-" Show diff for current file
-nnoremap <leader>dvf :!git diff %<CR>
 
 " Revert all changes for the current file
 nnoremap <leader>dvr :!git restore %<CR>:e!<CR>
+
+" Show diff for the current file
+function! GitFileDiff()
+  " Get Git repo root
+  let root = systemlist('git rev-parse --show-toplevel')[0]
+
+  " Compute file path relative to repo root
+  let f = substitute(expand('%:p'), root.'/', '', '')
+
+  " Save the original file name
+  let original_name = expand('%:t')
+
+  " Open vertical split for HEAD version
+  vert new
+  setlocal buftype=nofile
+  setlocal bufhidden=wipe
+
+  " Temporarily set buffer name for syntax detection
+  execute 'file HEAD:' . original_name
+
+  " Load HEAD version silently
+  execute 'silent! read !git show HEAD:' . f
+  1delete
+
+  " Detect filetype
+  filetype detect
+
+  " Enable diff mode
+  diffthis
+  wincmd p
+  diffthis
+endfunction
+
+nnoremap <leader>dvf :call GitFileDiff()<CR>
 
 " --------------------------------
 " File explorer settings
