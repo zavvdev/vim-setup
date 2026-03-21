@@ -130,7 +130,7 @@ If merge has conflicts:
 
 1. Open vim
 
-2. Press `d v c` to open diffview
+2. Press `Leader d v m` to open diffview
 
 3. Jump to start of next change: `]c`
 
@@ -148,6 +148,12 @@ List uncommited files:
 commited yet.
 
 2. Put the cursor on the path and press `g f` to open the file.
+
+Diffs:
+
+1. Show diff for the current file: `Leader d v f`
+
+2. Revert all changes for the current file: `Leader d v r`
 
 ## LSP
 

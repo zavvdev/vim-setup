@@ -177,14 +177,20 @@ augroup END
 " 4. Then run 'git mergetool'.
 " 5. To accept changes you can write 'diffget N' where N is the number of window with
 " corresponding changes.
-nnoremap <leader>dvc :!git mergetool<CR> 
+nnoremap <leader>dvm :!git mergetool<CR>
 
 " --------------------------------
-" List uncommited changed files
+" Git file changes
 " --------------------------------
 
 " Put cursor on file path and press gf to open the file
 nnoremap <leader>dv :cexpr system('git diff --name-only')<CR>:copen<CR>
+
+" Show diff for current file
+nnoremap <leader>dvf :!git diff %<CR>
+
+" Revert all changes for the current file
+nnoremap <leader>dvr :!git restore %<CR>:e!<CR>
 
 " --------------------------------
 " File explorer settings
