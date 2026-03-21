@@ -301,7 +301,13 @@ augroup END
 
 " List all previously opened files available in the buffer
 " Should contain space after :b
-nnoremap <leader>? :b 
+" It will use wildmenu to display recent files in buffer
+" nnoremap <leader>? :b 
+
+" Or we can use ls to see the latest files
+" It can be more convenient because it shows file numbers that
+" you can use to jump to them
+nnoremap <leader>? :ls!<CR>:b<Space>
 
 " Open prev file in the buffer
 nnoremap <leader>, :bp <CR>
