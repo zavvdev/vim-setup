@@ -160,7 +160,7 @@ nnoremap <leader>? :b
 nnoremap <leader>, :bp <CR>
 
 " Open next file in the buffer
-nnoremap <leader>. :bp <CR>
+nnoremap <leader>. :bn <CR>
 
 " Search for file
 " Should contain space after :find
