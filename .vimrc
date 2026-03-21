@@ -1,3 +1,13 @@
+" TODO:
+" - [ ] Persist previously opened file history after vim close.
+" - [ ] Improve search speed.
+" - [ ] Make sure that we can grep search with multiple words without using
+"       quotes.
+
+" --------------------------------
+" Basic settings
+" --------------------------------
+
 " Disable compatibility with vi editor in order to use modern Vim features
 set nocompatible
 
@@ -31,7 +41,7 @@ highlight Cursorline cterm=bold ctermbg=black
 " Enable highlight search pattern
 set hlsearch
 
-" Enable smartcase search sensitivity
+" Enable smart case search sensitivity
 set ignorecase
 set smartcase
 
@@ -42,15 +52,37 @@ set relativenumber
 " Show the matching part of pairs [] {} and ()
 set showmatch
 
-" Remove trailing whitespace from Python, JavaScript, TypeScript, JSX, TSX, CSS, HTML and Rust files
-autocmd BufWritePre *.py :%s/\s\+$//e
-autocmd BufWritePre *.js :%s/\s\+$//e
-autocmd BufWritePre *.ts :%s/\s\+$//e
-autocmd BufWritePre *.jsx :%s/\s\+$//e
-autocmd BufWritePre *.tsx :%s/\s\+$//e
-autocmd BufWritePre *.css :%s/\s\+$//e
-autocmd BufWritePre *.html :%s/\s\+$//e
-autocmd BufWritePre *.rs :%s/\s\+$//e
+" How long Vim waits (in milliseconds) before triggering certain idle events
+set updatetime=800
+
+" Disable top banner
+let g:netrw_banner = 0
+
+" Setup cursor appearance for different modes
+let &t_SI = "\e[5 q"
+let &t_SR = "\e[3 q"
+let &t_EI = "\e[1 q"
+
+" Auto completion alias
+inoremap <S-Tab> <C-n>
+set complete=.,w,b,u,t
+
+" Multiline editing
+" Select multiple lines in visual mode
+" and press <leader>aa. Then you can add
+" any prefix you want and press ESC.
+" To remove prefix select lines in visual
+" mode in a way that the last selection
+" captures the whole prefix you want to remove.
+" Press <leader>ar which will select prefix for
+" each row. Then press x which will remove prefix.
+" Can be used for commenting.
+vnoremap <leader>aa <C-v>A
+vnoremap <leader>ar <C-v>
+
+" --------------------------------
+" Theme settings
+" --------------------------------
 
 " Enable color themes
 if !has('gui_running')
@@ -60,21 +92,21 @@ endif
 " Enable true colors support
 set termguicolors
 
-" Colorscheme
+" Theme
 colorscheme shine
 
-set updatetime=800
-set showmode
-
-" Configure status line
+" --------------------------------
+" Status line settings
+" --------------------------------
 
 " Always show status line
 set laststatus=2
 
+" Displays the current Vim mode in the status line
+set showmode
+
 " Show path to current file
 set statusline=%f
-
-" set statusline+=%h%w%m%r\
 
 " Split on the left and right
 set statusline+=%=
@@ -108,18 +140,13 @@ augroup END
 
 let &statusline .= '  %{get(b:, "git_branch", "")}'
 
-" Show type definitions (probably works with C and some others)
-nnoremap K :ptag <cword><CR>
+" --------------------------------
+" Search settings
+" --------------------------------
 
-" Search
-" Vim has native feature for following path.
-" Simply put the cursor on path and press gf.
-" If you want to go to definition in the same file
-" vim also has native feature for it. Put cursor on
-" variable/function etc and press gd.
-
-" Search all subdirectories
+" Search all sub directories
 set path+=$PWD/**
+
 " Visual menu for command completion
 set wildmenu
 
@@ -128,10 +155,15 @@ set wildmenu
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
 set wildignorecase
 
+" Set grep search to git grep
 set gp=git\ grep\ -n
 
+" Search for grep in all project files
 " Should contain space after :grep
 nnoremap <leader>sfg :grep 
+
+" Search for current word under the cursor in all project files
+nnoremap <leader>sfgc :grep! <C-R><C-W>
 
 " Just press Enter after performing grep search and it
 " will automatically run :copen
@@ -141,7 +173,10 @@ augroup quickfix
     autocmd QuickFixCmdPost l* lwindow
 augroup END
 
-" Merge conflicts
+" --------------------------------
+" Resolving merge conflicts settings
+" --------------------------------
+
 " 1. Run 'git config --global merge.tool vimdiff' to assign merge tool to vimdiff app
 " 2. Run 'git config --global mergetool.keepBackup false' to disable backup files
 " 3. Checkout to the branch you want to merge something in and run 'git merge'.
@@ -150,60 +185,24 @@ augroup END
 " corresponding changes.
 nnoremap <leader>dvc :!git mergetool<CR> 
 
-" File navigation
-
-" List all previously opened files available in the buffer
-" Should contain space after :b
-nnoremap <leader>? :b 
-
-" Open prev file in the buffer
-nnoremap <leader>, :bp <CR>
-
-" Open next file in the buffer
-nnoremap <leader>. :bn <CR>
-
-" Search for file
-" Should contain space after :find
-nnoremap <leader>sf :find 
-
-" Search with inline path
-" Should contain space after :e
-nnoremap <leader>sp :e 
-set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
-
-" Multiline editing
-" Select multiple lines in visual mode
-" and press <leader>aa. Then you can add
-" any prefix you want and press ESC.
-" To remove prefix select lines in visual
-" mode in a way that the last selection
-" captures the whole prefix you want to remove.
-" Press <leader>ar which will select prefix for
-" each row. Then press x which will remove prefix.
-" Can be used for commenting.
-vnoremap <leader>aa <C-v>A
-vnoremap <leader>ar <C-v>
-
-" Autocompletion alias
-inoremap <S-Tab> <C-n>
-set complete=.,w,b,u,t
-
-" Disable top banner
-let g:netrw_banner = 0
-
-" Setup cursor appearance for different modes
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-let &t_EI = "\e[1 q"
+" --------------------------------
+" File explorer settings
+" --------------------------------
 
 " Netrw setup
 nnoremap <leader>e :Explore<CR>
 
 " Splits
-
+" Split window from the current file
 nnoremap <leader>v :Vexplore<CR>
+
+" Increase size of the current split window
 nnoremap <leader>> :vertical resize +10<CR>
+
+" Decrease size of the current split window
 nnoremap <leader>< :vertical resize -10<CR>
+
+" Make all split windows equal size
 nnoremap <leader>= :wincmd =<CR>
 
 function! NetrwMapping()
@@ -262,8 +261,30 @@ augroup netrw_mapping
   autocmd filetype netrw call NetrwMapping()
 augroup END
 
-" LSP CONFIG
+" List all previously opened files available in the buffer
+" Should contain space after :b
+nnoremap <leader>? :b 
 
+" Open prev file in the buffer
+nnoremap <leader>, :bp <CR>
+
+" Open next file in the buffer
+nnoremap <leader>. :bn <CR>
+
+" Search for file
+" Should contain space after :find
+nnoremap <leader>sf :find 
+
+" Search in files with entering path
+" Should contain space after :e
+nnoremap <leader>sp :e 
+set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
+
+" --------------------------------
+" Language specific settings
+" --------------------------------
+
+" LSP CONFIG
 " To install without plugin manager:
 " 1. mkdir -p ~/.vim/pack/lsp/start
 " 2. cd ~/.vim/pack/lsp/start
@@ -292,20 +313,29 @@ endif
 " Go to definition
 nnoremap gd :LspDefinition<CR>
 
-" Show references to the word under the cursor
+" Show references to the word under the cursor in the current file
 nnoremap gr :LspReferences<CR>
 
 " Show type information (hover)
 nnoremap K :LspHover<CR>
 
-" Rename symbol
+" Rename all occurrences of the symbol in the current file
 nnoremap <leader>rn :LspRename<CR>
 
 " Code action
 nnoremap <leader>ca :LspCodeAction<CR>
 
-" Show lsp errors in current file
+" Show LSP errors in the current file
 nnoremap <leader>si :LspDocumentDiagnostics<CR>
 
-" Apply formatting
+" Apply formatting for the current file
 nnoremap <leader>fm :LspDocumentFormat<CR>
+
+" Remove trailing whitespace from JavaScript, TypeScript, JSX, TSX, CSS, HTML and Rust files
+autocmd BufWritePre *.js :%s/\s\+$//e
+autocmd BufWritePre *.ts :%s/\s\+$//e
+autocmd BufWritePre *.jsx :%s/\s\+$//e
+autocmd BufWritePre *.tsx :%s/\s\+$//e
+autocmd BufWritePre *.css :%s/\s\+$//e
+autocmd BufWritePre *.html :%s/\s\+$//e
+autocmd BufWritePre *.rs :%s/\s\+$//e

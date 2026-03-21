@@ -6,15 +6,17 @@ Minimal setup.
 
 1. [Vim](https://www.vim.org/) should be installed.
 
-2. If you type `vim --version` and don't see `+clipboard` then you need to install `vim-gtk3` package in your system if you're on Linux.
+2. [Git](https://git-scm.com/) should be installed.
 
-3. Configuration lives in `~/.vimrc` or `~/.vim/vimrc`.
+3. If you type `vim --version` and don't see `+clipboard` then you need to install `vim-gtk3` package in your system if you're on Linux.
 
-4. Run `git config --global merge.tool vimdiff` to assign merge tool to vimdiff.
+4. Configuration lives in `~/.vimrc` or `~/.vim/vimrc`.
 
-5. Run `git config --global mergetool.keepBackup false` to disable backup files.
+5. Run `git config --global merge.tool vimdiff` to assign merge tool to vimdiff.
 
-6. For LSP support see [LSP
+6. Run `git config --global mergetool.keepBackup false` to disable backup files.
+
+7. For LSP support see [LSP
    section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp).
 
 ## Keybindings
@@ -73,15 +75,17 @@ Leader key: `Space`
 
 1. Search in files: `Leader s f`
 
-2. Search in by path: `Leader s p`
+2. Search in files by entering path: `Leader s p`
 
-3. Search in files by grep: `Leader s f g` then press Enter
+3. Search in files by grep: `Leader s f g`, type something then press Enter
 
-4. Show list of recently opened files: `Leader ? Tab`
+4. Search current word under the cursor in all files: `Leader s f g c` then press Enter
 
-5. Open previous recently opened file: `Leader ,`
+5. Show list of recently opened files: `Leader ? Tab`
 
-6. Open next recently opened file: `Leader .`
+6. Open previous recently opened file: `Leader ,`
+
+7. Open next recently opened file: `Leader .`
 
 #### File
 
