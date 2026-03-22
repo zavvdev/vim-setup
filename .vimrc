@@ -116,8 +116,19 @@ set statusline+=\ %y
 " Show if buffer is read-only.
 set statusline+=\ %r
 
-" Line number info.
-set statusline+=\ %l/%L
+" Search match counter
+function! SearchCount()
+  if !v:hlsearch
+    return ''
+  endif
+  let sc = searchcount()
+  if sc.total == 0
+    return ''
+  endif
+  return printf('[%d/%d]', sc.current, sc.total)
+endfunction
+
+set statusline+=\ %{SearchCount()}
 
 " Setup git branch in status line.
 function! UpdateGitBranch()
