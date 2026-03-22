@@ -1,21 +1,22 @@
-" --------------------------------
+" ----------------------------------------
 " Basic settings
-" --------------------------------
+" ----------------------------------------
 
-" Disable compatibility with vi editor in order to use modern Vim features
+" Disable compatibility with vi editor in order to use modern Vim features.
 set nocompatible
 
-" Setup leader symbol
+" Setup leader symbol. This is the button that you press before
+" using another combo keybinding.
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
-" Enable mouse support 
+" Enable mouse support.
 set mouse=a
 
-" Enable syntax
+" Enable syntax highlighting.
 syntax enable
 
-" Configure indentation
+" Configure indentation.
 set expandtab
 set tabstop=2
 set softtabstop=2
@@ -24,47 +25,48 @@ set autoindent
 set textwidth=80
 set smartindent
 
-" Spelling checking
+" Spell checking.
 set spelllang=en_us
 set spell
 
-" Highlight current line
+" Highlight current line which mouse is on.
 set cursorline
 highlight Cursorline cterm=bold ctermbg=black
 
-" Enable highlight search pattern
+" Enable highlight search pattern.
 set hlsearch
 
-" Enable smart case search sensitivity
+" Enable smart case search sensitivity.
 set ignorecase
 set smartcase
 
-" Enable relative line numbers
+" Enable relative line numbers.
 set number
 set relativenumber
 
-" Show the matching part of pairs [] {} and ()
+" Show the matching part of pairs [] {} and ().
 set showmatch
 
-" How long Vim waits (in milliseconds) before triggering certain idle events
+" How long Vim waits (in milliseconds) before triggering certain idle events.
 set updatetime=800
 
-" Disable top banner
+" Disable top banner (I in netrw to show back).
 let g:netrw_banner = 0
 
-" Setup cursor appearance for different modes
+" Setup cursor appearance for different modes.
 let &t_SI = "\e[5 q"
 let &t_SR = "\e[3 q"
 let &t_EI = "\e[1 q"
 
-" Auto completion alias
+" Auto completion alias. Press Shift-Tab in Insert mode to
+" view auto completion options.
 inoremap <S-Tab> <C-n>
 set complete=.,w,b,u,t
 
-" Multiline editing
+" Multi line editing.
 " Select multiple lines in visual mode
 " and press <leader>aa. Then you can add
-" any prefix you want and press ESC.
+" any prefix you want and press Escape.
 " To remove prefix select lines in visual
 " mode in a way that the last selection
 " captures the whole prefix you want to remove.
@@ -74,50 +76,50 @@ set complete=.,w,b,u,t
 vnoremap <leader>aa <C-v>A
 vnoremap <leader>ar <C-v>
 
-" --------------------------------
+" ----------------------------------------
 " Theme settings
-" --------------------------------
+" ----------------------------------------
 
-" Enable color themes
+" Enable color themes.
 if !has('gui_running')
 	set t_Co=256
 endif
 
-" Enable true colors support
+" Enable true colors support.
 set termguicolors
 
-" Theme
+" Set theme.
 colorscheme shine
 
-" --------------------------------
+" ----------------------------------------
 " Status line settings
-" --------------------------------
+" ----------------------------------------
 
-" Always show status line
+" Always show status line.
 set laststatus=2
 
-" Displays the current Vim mode in the status line
+" Displays the current Vim mode in the status line.
 set showmode
 
-" Show path to current file
+" Show path to current file.
 set statusline=%f
 
-" Split on the left and right
+" Split on the left and right.
 set statusline+=%=
 
-" Show row and col info
+" Show row and col info.
 set statusline+=%(%l,%c%V\ %=\ %P%)
 
-" Show currently opened file type
+" Show currently opened file extension.
 set statusline+=\ %y
 
-" Show if buffer is read-only
+" Show if buffer is read-only.
 set statusline+=\ %r
 
-" Line number info
+" Line number info.
 set statusline+=\ %l/%L
 
-" Setup git branch in status line
+" Setup git branch in status line.
 function! UpdateGitBranch()
   let dir = expand('%:p:h')
   if finddir('.git', dir . ';') != ''
@@ -134,32 +136,32 @@ augroup END
 
 let &statusline .= '  %{get(b:, "git_branch", "")}'
 
-" --------------------------------
+" ----------------------------------------
 " Search settings
-" --------------------------------
+" ----------------------------------------
 
-" Search all sub directories
+" Set absolute path to be able to search in all sub directories.
 set path+=$PWD/**
 
-" Visual menu for command completion
+" Visual menu for command completion.
 set wildmenu
 
-" wildignore only removes entries from the wildmenu
-" after entries have been found; it does not change search times
+" 'wildignore' only removes entries from the wildmenu
+" after entries have been found; it does not change search times.
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
 set wildignorecase
 
-" Set grep search to git grep
+" Set grep search tool to 'git grep'.
 set gp=git\ grep\ -n
 
-" Search for grep in all project files
-" Should contain space after :grep
+" Search for sub string in all project files.
+" Should contain space after :grep.
 nnoremap <leader>sfg :grep 
 
-" Search for current word under the cursor in all project files
+" Search for current word under the cursor in all project files.
 nnoremap <leader>sfgc :grep! <C-R><C-W>
 
-" Just press Enter after performing grep search and it
+" Just press Enter after performing grep search and it.
 " will automatically run :copen
 augroup quickfix
     autocmd!
@@ -167,55 +169,55 @@ augroup quickfix
     autocmd QuickFixCmdPost l* lwindow
 augroup END
 
-" --------------------------------
+" ----------------------------------------
 " Resolving merge conflicts settings
-" --------------------------------
+" ----------------------------------------
 
-" 1. Run 'git config --global merge.tool vimdiff' to assign merge tool to vimdiff app
-" 2. Run 'git config --global mergetool.keepBackup false' to disable backup files
+" 1. Run 'git config --global merge.tool vimdiff' to assign merge tool to vimdiff app.
+" 2. Run 'git config --global mergetool.keepBackup false' to disable backup files.
 " 3. Checkout to the branch you want to merge something in and run 'git merge'.
 " 4. Then run 'git mergetool'.
 " 5. To accept changes you can write 'diffget N' where N is the number of window with
-" corresponding changes.
-nnoremap <leader>dvm :!git mergetool<CR>
+"    corresponding changes.
+nnoremap <leader>dvm :!git mergetool<CR> 
 
-" --------------------------------
+" ----------------------------------------
 " Git file changes
-" --------------------------------
+" ----------------------------------------
 
-" After using this binding, put cursor on file path and press gf to open the file
+" After using this binding, put cursor on file path and press gf to open the file.
 nnoremap <leader>dv :cexpr system('git diff --name-only')<CR>:copen<CR>
 
-" Revert all changes for the current file
+" Revert all changes for the current file.
 nnoremap <leader>dvr :!git restore %<CR>:e!<CR>
 
-" Show diff for the current file
+" Show diff for the current file.
 function! GitFileDiff()
-  " Get Git repo root
+  " Get Git repository root.
   let root = systemlist('git rev-parse --show-toplevel')[0]
 
-  " Compute file path relative to repo root
+  " Compute file path relative to repository root.
   let f = substitute(expand('%:p'), root.'/', '', '')
 
-  " Save the original file name
+  " Save the original file name.
   let original_name = expand('%:t')
 
-  " Open vertical split for HEAD version
+  " Open vertical split for HEAD version.
   vert new
   setlocal buftype=nofile
   setlocal bufhidden=wipe
 
-  " Temporarily set buffer name for syntax detection
+  " Temporarily set buffer name for syntax detection.
   execute 'file HEAD:' . original_name
 
-  " Load HEAD version silently
+  " Load HEAD version silently.
   execute 'silent! read !git show HEAD:' . f
   1delete
 
-  " Detect filetype
+  " Detect file extension.
   filetype detect
 
-  " Enable diff mode
+  " Enable diff mode.
   diffthis
   wincmd p
   diffthis
@@ -223,25 +225,12 @@ endfunction
 
 nnoremap <leader>dvf :call GitFileDiff()<CR>
 
-" --------------------------------
+" ----------------------------------------
 " File explorer settings
-" --------------------------------
+" ----------------------------------------
 
 " Netrw setup
 nnoremap <leader>e :Explore<CR>
-
-" Splits
-" Split window from the current file
-nnoremap <leader>v :Vexplore<CR>
-
-" Increase size of the current split window
-nnoremap <leader>> :vertical resize +10<CR>
-
-" Decrease size of the current split window
-nnoremap <leader>< :vertical resize -10<CR>
-
-" Make all split windows equal size
-nnoremap <leader>= :wincmd =<CR>
 
 function! NetrwMapping()
   " Mark a file
@@ -299,42 +288,56 @@ augroup netrw_mapping
   autocmd filetype netrw call NetrwMapping()
 augroup END
 
-" List all previously opened files available in the buffer
-" Should contain space after :b
-" It will use wildmenu to display recent files in buffer
+" Split window from the current file.
+nnoremap <leader>v :Vexplore<CR>
+
+" Increase size of the current split window.
+nnoremap <leader>> :vertical resize +10<CR>
+
+" Decrease size of the current split window.
+nnoremap <leader>< :vertical resize -10<CR>
+
+" Make all split windows equal size.
+nnoremap <leader>= :wincmd =<CR>
+
+" List all previously opened files available in the buffer.
+" Should contain space after :b.
+" It will use wildmenu to display recent files in buffer.
 " nnoremap <leader>? :b 
 
-" Or we can use ls to see the latest files
+" Alternatively we can use ls to see the latest files.
 " It can be more convenient because it shows file numbers that
-" you can use to jump to them
+" you can use to jump to them.
 nnoremap <leader>? :ls!<CR>:b<Space>
 
-" Open prev file in the buffer
+" Open previous file in the buffer.
 nnoremap <leader>, :bp <CR>
 
-" Open next file in the buffer
+" Open next file in the buffer.
 nnoremap <leader>. :bn <CR>
 
-" Search for file
-" Should contain space after :find
+" Search for file.
+" Should contain space after :find.
 nnoremap <leader>sf :find 
 
-" Search in files with entering path
-" Should contain space after :e
+" Search in files with entering path.
+" Should contain space after :e.
 nnoremap <leader>sp :e 
+
+" Automatically add file extensions when searching for files.
 set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
 
-" --------------------------------
+" ----------------------------------------
 " Language specific settings
-" --------------------------------
+" ----------------------------------------
 
-" LSP CONFIG
+" LSP configuration.
 " To install without plugin manager:
 " 1. mkdir -p ~/.vim/pack/lsp/start
 " 2. cd ~/.vim/pack/lsp/start
 " 3. git clone https://github.com/prabirshrestha/vim-lsp.git
 
-" Lsp for rust.
+" Lsp for Rust.
 " Install rust-analyzer globally: rustup component add rust-analyzer
 if executable('rust-analyzer')
   autocmd User lsp_setup call lsp#register_server({
@@ -354,28 +357,28 @@ if executable('typescript-language-server')
       \ })
 endif
 
-" Go to definition
+" Go to definition.
 nnoremap gd :LspDefinition<CR>
 
-" Show references to the word under the cursor in the current file
+" Show references to the word under the cursor in the current file.
 nnoremap gr :LspReferences<CR>
 
-" Show type information (hover)
+" Show type information (hover).
 nnoremap K :LspHover<CR>
 
-" Rename all occurrences of the symbol in the current file
+" Rename all occurrences of the symbol in the current file.
 nnoremap <leader>rn :LspRename<CR>
 
-" Code action
+" Code action.
 nnoremap <leader>ca :LspCodeAction<CR>
 
-" Show LSP errors in the current file
+" Show LSP errors in the current file.
 nnoremap <leader>si :LspDocumentDiagnostics<CR>
 
-" Apply formatting for the current file
+" Apply formatting for the current file.
 nnoremap <leader>fm :LspDocumentFormat<CR>
 
-" Remove trailing whitespace from JavaScript, TypeScript, JSX, TSX, CSS, HTML and Rust files
+" Remove trailing whitespace from provided files.
 autocmd BufWritePre *.js :%s/\s\+$//e
 autocmd BufWritePre *.ts :%s/\s\+$//e
 autocmd BufWritePre *.jsx :%s/\s\+$//e
