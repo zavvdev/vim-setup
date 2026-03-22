@@ -162,15 +162,26 @@ set wildmenu
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
 set wildignorecase
 
+" Search for a file.
+" Should contain space after :find.
+nnoremap <leader>sf :find 
+
+" Search in files with entering path.
+" Should contain space after :e.
+nnoremap <leader>sp :e 
+
+" Automatically add file extensions when searching for files.
+set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
+
 " Set grep search tool to 'git grep'.
 set gp=git\ grep\ -n
 
 " Search for sub string in all project files.
 " Should contain space after :grep.
-nnoremap <leader>sfg :grep 
+nnoremap <leader>sg :grep 
 
 " Search for current word under the cursor in all project files.
-nnoremap <leader>sfgc :grep! <C-R><C-W>
+nnoremap <leader>sgc :grep! <C-R><C-W>
 
 " Just press Enter after performing grep search and it.
 " will automatically run :copen
@@ -326,17 +337,6 @@ nnoremap <leader>, :bp <CR>
 
 " Open next file in the buffer.
 nnoremap <leader>. :bn <CR>
-
-" Search for file.
-" Should contain space after :find.
-nnoremap <leader>sf :find 
-
-" Search in files with entering path.
-" Should contain space after :e.
-nnoremap <leader>sp :e 
-
-" Automatically add file extensions when searching for files.
-set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
 
 " ----------------------------------------
 " Language specific settings

@@ -83,9 +83,9 @@ From netrw:
 
 2. Search in files by entering path: `Leader s p`.
 
-3. Search in files by grep: `Leader s f g`, type something then press Enter.
+3. Search in files by grep: `Leader s g`, type something then press Enter.
 
-4. Search current word under the cursor in all files: `Leader s f g c` then press Enter.
+4. Search current word under the cursor in all files: `Leader s g c` then press Enter.
 
 5. Show list of recently opened files: `Leader ?`. If you're using `nnoremap <leader>? :b` then press Tab after this combo.
 
