@@ -121,8 +121,8 @@ function! SearchCount()
   if !v:hlsearch
     return ''
   endif
-  let sc = searchcount()
-  if sc.total == 0
+  let sc = searchcount({ 'maxcount': 0 })
+  if empty(sc) || sc.total == 0
     return ''
   endif
   return printf('[%d/%d]', sc.current, sc.total)
