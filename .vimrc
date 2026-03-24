@@ -322,6 +322,9 @@ nnoremap <leader>< :vertical resize -10<CR>
 " Make all split windows equal size.
 nnoremap <leader>= :wincmd =<CR>
 
+" Open a new tab from the current file
+nnoremap <leader>t :tab split<CR>
+
 " List all previously opened files available in the buffer.
 " Should contain space after :b.
 " It will use wildmenu to display recent files in buffer.
