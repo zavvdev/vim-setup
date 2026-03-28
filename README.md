@@ -117,15 +117,17 @@ From netrw:
 
 11. Split vertically: `Leader v` from file.
 
-12. Toggle auto complete in insert mode: `Shift Tab`.
+12. Open current file in a new tab: `Leader t` from file.
 
-13. Increase split window width: `Leader >`.
+13. Toggle auto complete in insert mode: `Shift Tab`.
 
-14. Decrease split window width: `Leader <`.
+14. Increase split window width: `Leader >`.
 
-15. Equalize split size: `Leader =`.
+15. Decrease split window width: `Leader <`.
 
-16. Put cursor in normal mode on number and do `A` to increase number or `X` to decrease.
+16. Equalize split size: `Leader =`.
+
+17. Put cursor in normal mode on number and do `A` to increase number or `X` to decrease.
 
 ### Git
 
