@@ -333,7 +333,15 @@ nnoremap <leader>t :tab split<CR>
 " Alternatively we can use ls to see the latest files.
 " It can be more convenient because it shows file numbers that
 " you can use to jump to them.
-nnoremap <leader>? :ls!<CR>:b<Space>
+function! ListFileBuffers()
+  for b in getbufinfo({'buflisted': 1})
+    if filereadable(b.name)
+      echo b.bufnr . ' ' . fnamemodify(b.name, ':.')
+    endif
+  endfor
+endfunction
+command! LsFiles call ListFileBuffers()
+nnoremap <leader>? :LsFiles<CR>:b<Space>
 
 " Open previous file in the buffer.
 nnoremap <leader>, :bp <CR>
