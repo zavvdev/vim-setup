@@ -25,6 +25,9 @@ set autoindent
 set textwidth=100
 set smartindent
 
+" Use tabs for Makefile since required
+autocmd FileType make setlocal noexpandtab
+
 " Spell checking.
 set spelllang=en_us
 set spell
