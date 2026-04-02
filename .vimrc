@@ -256,6 +256,8 @@ nnoremap <leader>dvf :call GitFileDiff()<CR>
 
 " Netrw setup
 nnoremap <leader>e :Explore<CR>
+" Enable relative line numbers.
+let g:netrw_bufsettings = 'noma nomod rnu nowrap ro nobl'
 
 function! NetrwMapping()
   " Mark a file
