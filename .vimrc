@@ -396,6 +396,8 @@ nnoremap <leader>rn :LspRename<CR>
 
 " Code action.
 nnoremap <leader>ca :LspCodeAction<CR>
+" Make the code actions list to be a floating window.
+let g:lsp_code_action_ui = 'float'
 
 " Show LSP errors in the current file.
 nnoremap <leader>si :LspDocumentDiagnostics<CR>
