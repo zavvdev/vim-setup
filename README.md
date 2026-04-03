@@ -129,6 +129,12 @@ From netrw:
 
 17. Put cursor in normal mode on number and do `A` to increase number or `X` to decrease.
 
+18. Refresh current file: `Leader rr`.
+
+### Code aliases
+
+1. `console.log()` alias: `Ctrl l`.
+
 ### Git
 
 If merge has conflicts:

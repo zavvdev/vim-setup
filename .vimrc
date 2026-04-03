@@ -79,6 +79,16 @@ set complete=.,w,b,u,t
 vnoremap <leader>aa <C-v>A
 vnoremap <leader>ar <C-v>
 
+" Refresh file
+nnoremap <leader>rr :e!<CR>
+
+" ----------------------------------------
+" Code aliases
+" ----------------------------------------
+
+" Ctrl + l alias for console.log()
+inoremap <C-l> console.log()<Left>
+
 " ----------------------------------------
 " Theme settings
 " ----------------------------------------
@@ -337,7 +347,7 @@ nnoremap <leader>t :tab split<CR>
 
 " Alternatively we can use ls to see the latest files.
 " It can be more convenient because it shows file numbers that
-" you can use to jump to them.
+" you can use in order to jump to them.
 function! ListFileBuffers()
   for b in getbufinfo({'buflisted': 1})
     if filereadable(b.name)
@@ -402,10 +412,10 @@ nnoremap <leader>ca :LspCodeAction<CR>
 let g:lsp_code_action_ui = 'float'
 
 " Show LSP errors in the current file.
-nnoremap <leader>si :LspDocumentDiagnostics<CR>
+nnoremap <leader>si :e!<CR>:LspDocumentDiagnostics<CR>
 
 " Apply formatting for the current file.
-nnoremap <leader>fm :LspDocumentFormat<CR>
+nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
 
 " Remove trailing whitespace from provided files.
 autocmd BufWritePre *.js :%s/\s\+$//e
