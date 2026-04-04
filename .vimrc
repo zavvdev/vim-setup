@@ -104,8 +104,11 @@ nnoremap <leader>rr :e!<CR>
 "
 " ----------------------------------------
 
-" Ctrl + l alias for console.log()
+" Ctrl + l alias for Browser console.log API.
 inoremap <C-l> console.log()<Left>
+
+" Ctrl + p alias for Rust's println! macro.
+inoremap <C-p> println!()<Left>
 
 " ----------------------------------------
 "

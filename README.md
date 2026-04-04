@@ -130,6 +130,8 @@ last line selection covers all prefix, press `x`.
 
 1. `console.log()` alias: `Ctrl l` from insert mode.
 
+2. `println!()` alias: `Ctrl p` from insert mode.
+
 ### Git
 
 If a merge has conflicts:
