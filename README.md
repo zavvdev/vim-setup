@@ -8,94 +8,92 @@ Minimal setup.
 
 2. [Git](https://git-scm.com/) should be installed.
 
-3. If you type `vim --version` and don't see `+clipboard` then you need to install `vim-gtk3`
-   package in your system if you're on Linux. You can research how to enable it on your specific
-   OS. You need this in order to be able to copy text into OS clipboard with `"+y`.
+3. If you run `vim --version` and don't see `+clipboard`, you need to install the `vim-gtk3`
+   package. You can research how to enable it for your specific OS. This is required in order to
+   copy text to the OS clipboard with `"+y`.
 
-4. Configuration lives in `~/.vimrc` or `~/.vim/vimrc` file.
+4. Configuration lives in `~/.vimrc` or `~/.vim/vimrc`.
 
-5. Run `git config --global merge.tool vimdiff` to assign merge tool to vimdiff.
+5. Run `git config --global merge.tool vimdiff` to set vimdiff as the merge tool.
 
 6. Run `git config --global mergetool.keepBackup false` to disable backup files.
 
-7. LSP requires plugin installation, so if you want LSP support, check [LSP section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp). If you don't want to support LSP, then remove 'Language specific settings' section in _.vimrc_ file.
+7. LSP requires plugin installation. If you want LSP support, see the [LSP section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp). Otherwise, remove the 'Language specific settings' section from your _.vimrc_ file.
 
 ## Keybindings
 
-Leader key: `Space`. Leader is the button that you press before using keybindings combo.
+Leader key: `Space`. The Leader key is pressed before a keybinding combination.
 
-### File explorer.
+### File Explorer
 
-In order to open Netrw file explorer from file run: `Leader e`.
+To open the Netrw file explorer from a file, run: `Leader e`.
 
-Run these commands from file explorer:
+Run these commands from the file explorer:
 
-1. Create file: `f f`.
+1. Create a file: `f f`.
 
-2. Create directory: `f d`.
+2. Create a directory: `f d`.
 
-3. Edit file/directory name under the cursor: `f e`.
+3. Edit the name of the file/directory under the cursor: `f e`.
 
-4. Delete file or empty directory under the cursor: `f r`.
+4. Delete the file or empty directory under the cursor: `f r`.
 
-#### Moving files
+#### Moving Files
 
-Run these commands from file explorer:
+Run these commands from the file explorer:
 
-1. Mark directory as target: `Shift Tab`. This is needed for moving/copying files to that target.
+1. Mark a directory as the target: `Shift Tab`. This is required when moving or copying files to that directory.
 
-2. Mark/unmark file/directory: `Tab`.
+2. Mark/unmark a file or directory: `Tab`.
 
-3. Unmark all marked files/directories: `Leader Tab`.
+3. Unmark all marked files and directories: `Leader Tab`.
 
-4. Copy marked files/directories to target directory: `f c`.
+4. Copy marked files/directories to the target directory: `f c`.
 
-5. Copy marked files/directories to directory under the cursor: `f C`.
+5. Copy marked files/directories to the directory under the cursor: `f C`.
 
-6. Move marked files/directories to target directory: `f x`.
+6. Move marked files/directories to the target directory: `f x`.
 
-7. Moved marked files/directories to directory under the cursor: `f X`.
+7. Move marked files/directories to the directory under the cursor: `f X`.
 
-8. Run shell command on marked files/directories: `f ;`.
-   For example, mark non-empty directory, use _f ;_ and type _rm -r_ to delete the directory.
+8. Run a shell command on marked files/directories: `f ;`.
+   For example, mark a non-empty directory, use _f ;_, then type _rm -r_ to delete it.
 
 #### Navigation
 
-Run these commands from file explorer:
+Run these commands from the file explorer:
 
-1. Bookmark current directory: `f b`.
+1. Bookmark the current directory: `f b`.
 
-2. Remove most recent bookmark: `f b r`.
+2. Remove the most recent bookmark: `f b r`.
 
-3. Go to previous bookmarked directory: `f b g`.
+3. Go to the previous bookmarked directory: `f b g`.
 
-4. Show list of marked files: `f l m`.
+4. Show a list of marked files: `f l m`.
 
-5. Change directory to current under cursor: `c d`.
+5. Move up one directory: `-`.
 
-6. Move one directory above: `-`.
+6. Open a file in a new tab: place the cursor on a file/directory and press `t`.
 
-7. Open file in a new tab: Place cursor on file/directory press `t`.
-
-8. Navigate to opened tab by number: `Ngt` where N is a tab number.
+7. Navigate to an open tab by number: `Ngt`, where N is the tab number.
 
 #### Global Search
 
 1. Search in files: `Leader s f`.
 
-2. Search in files by entering path: `Leader s p`.
+2. Search in files by specifying a path: `Leader s p`.
 
-3. Search in files by grep: `Leader s g`, type something then press Enter.
+3. Search in files using grep: `Leader s g`, type something, then press Enter.
 
-4. Search current word under the cursor in all files: `Leader s g c` then press Enter.
+4. Search for the word under the cursor across all files: `Leader s g c`, then press Enter.
 
-5. Show list of recently opened files: `Leader ?`.
+5. Show a list of recently opened files: `Leader ?`.
 
-#### File
+### File
 
-1. Search for word under the cursor: `*`.
+1. Search for the word under the cursor: `*`.
 
-2. Go to specific line in file: `:<line number>`.
+2. Go to a specific line in the file: `:<line number>`.
 
 3. Scroll down: `Ctrl d`.
 
@@ -103,55 +101,56 @@ Run these commands from file explorer:
 
 5. Copy to clipboard: `" + y`.
 
-6. Add multi line prefix: `Leader a a`, add text to the beginning of the first line, `Esc`.
+6. Add a multi-line prefix: `Leader a a`, add text to the beginning of the first line, `Esc`.
 
-7. Remove multi line prefix: `Leader a r`, select prefix, `x`.
+7. Remove a multi-line prefix: `Leader a r`, select all of the lines with prefix in a way that the
+last line selection covers all prefix, press `x`.
 
 8. Go to definition: `g d`.
 
-9. Follow path under the cursor: `g f`.
+9. Follow the path under the cursor: `g f`.
 
-10. Split vertically: `v` on file in file explorer.
+10. Split vertically: press `v` on a file in the file explorer.
 
-11. Split vertically: `Leader v` from file.
+11. Split vertically: `Leader v` from a file.
 
-12. Open current file in a new tab: `Leader t` from file.
+12. Open the current file in a new tab: `Leader t` from a file.
 
-13. Toggle auto complete in insert mode: `Shift Tab`.
+13. Toggle autocomplete in insert mode: `Shift Tab`.
 
 14. Increase split window width: `Leader >`.
 
 15. Decrease split window width: `Leader <`.
 
-16. Equalize split size: `Leader =`.
+16. Equalize split sizes: `Leader =`.
 
-17. Refresh current file: `Leader rr`.
+17. Refresh the current file: `Leader rr`.
 
-### Code aliases
+### Code Aliases
 
 1. `console.log()` alias: `Ctrl l` from insert mode.
 
 ### Git
 
-If merge has conflicts:
+If a merge has conflicts:
 
 1. Open vim.
 
 2. Press `Leader d v m` to open diffview.
 
-3. Jump to start of next change: `]c`.
+3. Jump to the start of the next change: `]c`.
 
-4. Jump to start of previous change: `[c`.
+4. Jump to the start of the previous change: `[c`.
 
-5. Obtain a difference from other buffer. Place your cursor on the conflict and run: `do`.
+5. Obtain the difference from the other buffer. Place your cursor on the conflict and run: `do`.
 
-6. Put difference to other buffer. Place your cursor on the conflict and run: `dp`.
+6. Put the difference to the other buffer. Place your cursor on the conflict and run: `dp`.
 
-7. Use `:diffget N` where N is the number of screen with specific changes to accept that changes.
+7. Use `:diffget N`, where N is the number of the buffer with the desired changes, to accept those changes.
 
-List uncommited files:
+List uncommitted files:
 
-1. Use `Leader d v` to open the list of files that have been changed but not commited yet.
+1. Use `Leader d v` to open a list of files that have been changed but not yet committed.
 
 Diffs:
 
@@ -161,10 +160,9 @@ Diffs:
 
 ## LSP
 
-This configuration provide LSP support for Rust, JavaScript and TypeScript. You can see it in `.vimrc` file by searching for _Language specific settings_.
+This configuration provides LSP support for Rust, JavaScript, and TypeScript. You can see it in `.vimrc` by searching for _Language specific settings_.
 
-Since LSP is not supported by Vim out of the box for all languages, you need to install LSP for your
-desired language. You can do it without plugin manager:
+Since Vim does not support LSP out of the box for all languages, you need to install LSP for your desired language. You can do this without a plugin manager:
 
 1. `mkdir -p ~/.vim/pack/vendor/start`.
 
@@ -172,7 +170,7 @@ desired language. You can do it without plugin manager:
 
 3. `git clone https://github.com/prabirshrestha/vim-lsp.git`.
 
-This is basically how you can install any plugin by just cloning repository to that directory. You can name "vendor" however you want.
+This is how you can install any plugin — simply clone its repository into that directory. You can name "vendor" whatever you like.
 
 How to install LSP for Rust and JS/TS:
 
@@ -180,7 +178,7 @@ How to install LSP for Rust and JS/TS:
 
 2. `npm install -g typescript typescript-language-server`.
 
-For more information about LSP configuration see [vim-lsp](https://github.com/prabirshrestha/vim-lsp).
+For more information about LSP configuration, see [vim-lsp](https://github.com/prabirshrestha/vim-lsp).
 
 **Keybindings**
 
@@ -190,21 +188,21 @@ For more information about LSP configuration see [vim-lsp](https://github.com/pr
 
 3. Show code actions: `Leader c a`.
 
-4. Show lsp errors in current file: `Leader s i`.
+4. Show LSP errors in the current file: `Leader s i`.
 
 5. Apply formatting: `Leader f m`.
 
-You can check vim-lsp plugin if you want more actions.
+See the vim-lsp plugin documentation for additional actions.
 
-## Other useful keybindings
+## Other Useful Keybindings
 
-### Cursor movement
+### Cursor Movement
 
 `e` - jump forwards to the end of a word.
 
 `b` - jump backward to the end of a word.
 
-`%` - move cursor to matching character (default supported pairs: '()', '{}', '[]' - use :h matchpairs in vim for more info).
+`%` - move the cursor to a matching character (default supported pairs: `()`, `{}`, `[]` — use `:h matchpairs` in Vim for more info).
 
 `0` - jump to the start of the line.
 
@@ -218,11 +216,11 @@ You can check vim-lsp plugin if you want more actions.
 
 `G` - go to the last line of the document.
 
-`}` - jump to next paragraph (or function/block, when editing code).
+`}` - jump to the next paragraph (or function/block when editing code).
 
-`{` - jump to previous paragraph (or function/block, when editing code).
+`{` - jump to the previous paragraph (or function/block when editing code).
 
-### Insert mode - inserting/appending text
+### Insert Mode — Inserting/Appending Text
 
 `i` - insert before the cursor.
 
@@ -238,63 +236,61 @@ You can check vim-lsp plugin if you want more actions.
 
 `ea` - insert (append) at the end of the word.
 
-`Ctrl + w` - delete word before the cursor during insert mode.
+`Ctrl + w` - delete the word before the cursor.
 
-`Ctrl + t` - indent (move right) line one shiftwidth during insert mode.
+`Ctrl + t` - indent (move right) the line one shiftwidth.
 
-`Ctrl + d` - de-indent (move left) line one shiftwidth during insert mode.
+`Ctrl + d` - de-indent (move left) the line one shiftwidth.
 
-`Ctrl + n` - insert (auto-complete) next match before the cursor during insert mode.
+`Ctrl + n` - insert the next autocomplete match before the cursor.
 
-`Ctrl + p` - insert (auto-complete) previous match before the cursor during insert mode.
+`Ctrl + p` - insert the previous autocomplete match before the cursor.
 
 ### Editing
 
 `r` - replace a single character.
 
-`R` - replace more than one character, until ESC is pressed.
+`R` - replace more than one character until ESC is pressed.
 
-`J` - join line below to the current one with one space in between.
+`J` - join the line below to the current one with one space in between.
 
-`cc` - change (replace) entire line.
+`cc` - change (replace) the entire line.
 
 `c$` or `C` - change (replace) to the end of the line.
 
 `cw` or `ce` - change (replace) to the end of the word.
 
-`s` - delete character and substitute text (same as cl).
+`s` - delete the character and substitute text (same as `cl`).
 
-`S` - delete line and substitute text (same as cc).
+`S` - delete the line and substitute text (same as `cc`).
 
 `u` - undo.
 
 `Ctrl + r` - redo.
 
-`.` - repeat last command.
+`.` - repeat the last command.
 
-`Ctrl v`, `$`, `A`, add something at the end, `Esc` - append to the end of multiple lines.
+### Marking Text (Visual Mode)
 
-### Marking text (visual mode)
-
-`v` - start visual mode, mark lines, then do a command (like y-yank).
+`v` - start visual mode; mark lines, then run a command (e.g. `y` to yank).
 
 `V` - start linewise visual mode.
 
 `Ctrl + v` - start visual block mode.
 
-`a(` - a block with ().
+`a(` - a block with `()`.
 
-`a{` - a block with {}.
+`a{` - a block with `{}`.
 
-`at` - a block with <> tags.
+`at` - a block with `<>` tags.
 
-`i(` - inner block with ().
+`i(` - inner block with `()`.
 
-`i{` - inner block with {}.
+`i{` - inner block with `{}`.
 
-`it` - inner block with <> tags.
+`it` - inner block with `<>` tags.
 
-### Visual commands
+### Visual Commands
 
 `>` - shift text right.
 
@@ -310,102 +306,102 @@ You can check vim-lsp plugin if you want more actions.
 
 `U` - change marked text to uppercase.
 
-### Marks and positions
+### Marks and Positions
 
-`ma` - set current position for mark A.
+`ma` - set the current position as mark A.
 
-**`a** - jump to position of mark A.
+`` `a `` - jump to the position of mark A.
 
-**`.** - go to the position of the last change in this file.
-
-`g,` - go to newer position in change list.
-
-`g;` - go to older position in change list.
+`` `. `` - go to the position of the last change in this file.
 
 ### Macros
 
 `qa` - record macro a.
 
-`q` - stop recording macro.
+`q` - stop recording the macro.
 
 `@a` - run macro a.
 
-`@@` - rerun last run macro.
+`@@` - rerun the last run macro.
 
-### Cut and paste
+### Cut and Paste
 
 `yy` - yank (copy) a line.
 
-`Nyy` - yank (copy) N lines down.
+`Nyy` - yank (copy) N lines downward.
 
 `Ny<up|down>` - yank (copy) N lines up or down.
 
-`yw` - yank (copy) the characters of the word from the cursor position to the start of the next word.
+`yw` - yank (copy) characters from the cursor position to the start of the next word.
 
-`yiw` - yank (copy) word under the cursor.
+`yiw` - yank (copy) the word under the cursor.
 
-`y$` or `Y` - yank (copy) to end of line.
+`y$` or `Y` - yank (copy) to the end of the line.
 
-`p` - put (paste) the clipboard after cursor.
+`p` - put (paste) clipboard contents after the cursor.
 
-`P` - put (paste) before cursor.
+`P` - put (paste) before the cursor.
 
 `dd` - delete (cut) a line.
 
-`Ndd` - delete (cut) N lines down.
+`Ndd` - delete (cut) N lines downward.
 
 `Nd<up|down>` - delete (cut) N lines up or down.
 
-`dw` - delete (cut) the characters of the word from the cursor position to the start of the next word.
+`dw` - delete (cut) characters from the cursor position to the start of the next word.
 
-`:g/{pattern}/d` - delete all lines containing pattern.
+`:g/{pattern}/d` - delete all lines containing a pattern.
 
-`:g!/{pattern}/d` - delete all lines not containing pattern.
+`:g!/{pattern}/d` - delete all lines not containing a pattern.
 
-`d$ or D` - delete (cut) to the end of the line.
+`d$` or `D` - delete (cut) to the end of the line.
 
-`x` - delete (cut) character.
+`x` - delete (cut) a character.
 
-### Indent text
+### Indent Text
 
-`>>` - indent (move right) line one shiftwidth.
+`>>` - indent (move right) the line one shiftwidth.
 
-`<<` - de-indent (move left) line one shiftwidth.
+`<<` - de-indent (move left) the line one shiftwidth.
 
-`>%` - indent a block with () or {} (cursor on brace).
+`>%` - indent a block with `()` or `{}` (cursor on brace).
 
-`<%` - de-indent a block with () or {} (cursor on brace).
+`<%` - de-indent a block with `()` or `{}` (cursor on brace).
 
 ### Exiting
 
-`:w` - write (save) the file, but don't exit.
+`:w` - write (save) the file without exiting.
 
 `:wq` - write (save) and quit.
 
 `:q` - quit (fails if there are unsaved changes).
 
-`:qa` - quit all (fails if there are unsaved changes)
+`:qa` - quit all (fails if there are unsaved changes).
 
-`:q!` - quit and throw away unsaved changes.
+`:q!` - quit and discard unsaved changes.
 
-`:wqa` - write (save) and quit on all tabs.
+`:wqa` - write (save) and quit all tabs.
 
-### Search and replace
+### Search and Replace
 
-`/pattern` - search for pattern.
+`/pattern` - search for a pattern.
 
-`?pattern` - search backward for pattern.
+`?pattern` - search backward for a pattern.
 
-`n` - go forward in matched search result.
+`n` - go to the next match.
 
-`N` - go backward in matched search result.
+`N` - go to the previous match.
 
-`:%s/old/new/g` - replace all old with new throughout file.
+`:%s/old/new/g` - replace all occurrences of old with new throughout the file.
 
-`:%s/old/new/gc` - replace all old with new throughout file with confirmations.
+`:%s/old/new/gc` - replace all occurrences with confirmation.
 
-`:%s/old/new/gi` - replace global case insensitive.
+`:%s/old/new/gi` - replace all occurrences, case-insensitive.
 
-`:%s/old/new/gI` - replace global case sensitive.
+`:%s/old/new/gI` - replace all occurrences, case-sensitive.
 
-`:%s/old/new/gIc` - replace global case sensitive with confirmation.
+`:%s/old/new/gIc` - replace all occurrences, case-sensitive, with confirmation.
+
+---
+
+You can find more Vim commands [here](https://vim.rtorr.com/).
