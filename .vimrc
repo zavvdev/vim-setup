@@ -53,9 +53,6 @@ set showmatch
 " How long Vim waits (in milliseconds) before triggering certain idle events.
 set updatetime=800
 
-" Disable top banner (I in netrw to show back).
-let g:netrw_banner = 0
-
 " Setup cursor appearance for different modes.
 let &t_SI = "\e[5 q"
 let &t_SR = "\e[3 q"
@@ -325,6 +322,9 @@ augroup netrw_mapping
   autocmd filetype netrw call NetrwMapping()
 augroup END
 
+" Disable top banner (I in netrw to show back).
+let g:netrw_banner = 0
+
 " Split window from the current file.
 nnoremap <leader>v :Vexplore<CR>
 
@@ -349,7 +349,10 @@ nnoremap <leader>t :tab split<CR>
 " It can be more convenient because it shows file numbers that
 " you can use in order to jump to them.
 function! ListFileBuffers()
-  for b in getbufinfo({'buflisted': 1})
+  let buffers = getbufinfo({'buflisted': 1})
+  " Sort by most recently used (descending)
+  call sort(buffers, {a, b -> b.lastused - a.lastused})
+  for b in buffers
     if filereadable(b.name)
       echo b.bufnr . ' ' . fnamemodify(b.name, ':.')
     endif
