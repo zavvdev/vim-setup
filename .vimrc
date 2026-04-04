@@ -43,6 +43,9 @@ set smartindent
 " Use tabs for Makefile since required.
 autocmd FileType make setlocal noexpandtab
 
+" Use 2 spaces for JS/TS and their JSX variants.
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact setlocal tabstop=2 softtabstop=2 shiftwidth=2
+
 " Spell checking.
 set spelllang=en_us
 set spell
