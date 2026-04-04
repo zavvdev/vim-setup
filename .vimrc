@@ -1,5 +1,20 @@
 " ----------------------------------------
+"
+" Reusable functions
+"
+" ----------------------------------------
+
+function! s:TruncatePath(path, max)
+  if strlen(a:path) <= a:max
+    return a:path
+  endif
+  return '…' . strpart(a:path, strlen(a:path) - a:max + 1)
+endfunction
+
+" ----------------------------------------
+"
 " Basic settings
+"
 " ----------------------------------------
 
 " Disable compatibility with vi editor in order to use modern Vim features.
@@ -25,7 +40,7 @@ set autoindent
 set textwidth=100
 set smartindent
 
-" Use tabs for Makefile since required
+" Use tabs for Makefile since required.
 autocmd FileType make setlocal noexpandtab
 
 " Spell checking.
@@ -59,7 +74,7 @@ let &t_SR = "\e[3 q"
 let &t_EI = "\e[1 q"
 
 " Auto completion alias. Press Shift-Tab in Insert mode to
-" view auto completion options.
+" view auto completion options. It does not rely on LSP.
 inoremap <S-Tab> <C-n>
 set complete=.,w,b,u,t
 
@@ -76,18 +91,23 @@ set complete=.,w,b,u,t
 vnoremap <leader>aa <C-v>A
 vnoremap <leader>ar <C-v>
 
-" Refresh file
+" Refresh file. Useful if for any reason
+" lps warnings are cached.
 nnoremap <leader>rr :e!<CR>
 
 " ----------------------------------------
+"
 " Code aliases
+"
 " ----------------------------------------
 
 " Ctrl + l alias for console.log()
 inoremap <C-l> console.log()<Left>
 
 " ----------------------------------------
+"
 " Theme settings
+"
 " ----------------------------------------
 
 " Enable color themes.
@@ -99,10 +119,15 @@ endif
 set termguicolors
 
 " Set theme.
+" Light.
 colorscheme shine
+" Dark.
+" colorscheme habamax
 
 " ----------------------------------------
+"
 " Status line settings
+"
 " ----------------------------------------
 
 " Always show status line.
@@ -126,8 +151,9 @@ set statusline+=\ %y
 " Show if buffer is read-only.
 set statusline+=\ %r
 
-" Search match counter
-function! SearchCount()
+" Show how many matches we have for the current search
+" pattern in the current file when we use ?<something>.
+function! StatusLineSearchCount()
   if !v:hlsearch
     return ''
   endif
@@ -137,8 +163,7 @@ function! SearchCount()
   endif
   return printf('[%d/%d]', sc.current, sc.total)
 endfunction
-
-set statusline+=\ %{SearchCount()}
+set statusline+=\ %{StatusLineSearchCount()}
 
 " Setup git branch in status line.
 function! UpdateGitBranch()
@@ -149,16 +174,16 @@ function! UpdateGitBranch()
     let b:git_branch = ''
   endif
 endfunction
-
 augroup gitbranch
   autocmd!
   autocmd BufEnter,DirChanged * call UpdateGitBranch()
 augroup END
-
 let &statusline .= ' %{empty(get(b:, "git_branch", "")) ? "" : " " . get(b:, "git_branch")}'
 
 " ----------------------------------------
+"
 " Search settings
+"
 " ----------------------------------------
 
 " Set absolute path to be able to search in all sub directories.
@@ -168,32 +193,35 @@ set path+=$PWD/**
 set wildmenu
 
 " 'wildignore' only removes entries from the wildmenu
-" after entries have been found; it does not change search times.
+" after entries have been found. It does not change search times.
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
+
+" Make file search case insensitive.
 set wildignorecase
 
 " Search for a file.
-" Should contain space after :find.
+" This setting should contain space after :find so you
+" don't need to specify it manually after <leader>sf.
 nnoremap <leader>sf :find 
 
 " Search in files with entering path.
-" Should contain space after :e.
+" This setting should contain space after :e so you
+" don't need to specify it manually after <leader>sp.
 nnoremap <leader>sp :e 
 
 " Automatically add file extensions when searching for files.
-set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.cs
+set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.css,.scss
 
 " Set grep search tool to 'git grep'.
 set gp=git\ grep\ -n
 
 " Search for sub string in all project files.
-" Should contain space after :grep.
-nnoremap <leader>sg :grep 
+nnoremap <leader>sg :grep ""<Left>
 
 " Search for current word under the cursor in all project files.
 nnoremap <leader>sgc :grep! <C-R><C-W>
 
-" Just press Enter after performing grep search and it.
+" Just press Enter after performing grep search and it
 " will automatically run :copen
 augroup quickfix
     autocmd!
@@ -202,118 +230,138 @@ augroup quickfix
 augroup END
 
 " ----------------------------------------
+"
 " Resolving merge conflicts settings
+"
 " ----------------------------------------
 
-" 1. Run 'git config --global merge.tool vimdiff' to assign merge tool to vimdiff app.
-" 2. Run 'git config --global mergetool.keepBackup false' to disable backup files.
-" 3. Checkout to the branch you want to merge something in and run 'git merge'.
-" 4. Then run 'git mergetool'.
-" 5. To accept changes you can write 'diffget N' where N is the number of window with
+" 1. Merge branch into target branch.
+" 2. Then run 'git mergetool' manually from terminal or open vim and run <leader>dvm.
+" 3. To accept changes you can write ':diffget N' where N is the number of window with
 "    corresponding changes.
 nnoremap <leader>dvm :!git mergetool<CR> 
 
 " ----------------------------------------
+"
 " Git file changes
+"
 " ----------------------------------------
 
-" After using this binding, put cursor on file path and press gf to open the file.
-nnoremap <leader>dv :cexpr system('git diff --name-only')<CR>:copen<CR>
+" Keep track of all changed file after we opened one.
+let s:git_changed_files = []
+
+function! s:OpenGitChangedFileFromPopup(id, result)
+  if a:result <= 0
+    return
+  endif
+  let file = s:git_changed_files[a:result - 1]
+  execute 'edit ' . fnameescape(file)
+endfunction
+
+function! GitChangedFilesPopup()
+  let s:git_changed_files = systemlist('git diff --name-only')
+  if empty(s:git_changed_files)
+    echo "No changed files"
+    return
+  endif
+  let display = map(copy(s:git_changed_files), 's:TruncatePath(v:val, 60)')
+  call popup_menu(display, {
+        \ 'title': 'Changed files',
+        \ 'callback': function('s:OpenGitChangedFileFromPopup'),
+        \ 'filter': 'popup_filter_menu',
+        \ 'mapping': 1,
+        \ })
+endfunction
+nnoremap <leader>dv :call GitChangedFilesPopup()<CR>
 
 " Revert all changes for the current file.
 nnoremap <leader>dvr :!git restore %<CR>:e!<CR>
 
 " Show diff for the current file.
 function! GitFileDiff()
-  " Get Git repository root.
   let root = systemlist('git rev-parse --show-toplevel')[0]
-
-  " Compute file path relative to repository root.
   let f = substitute(expand('%:p'), root.'/', '', '')
-
-  " Save the original file name.
   let original_name = expand('%:t')
-
-  " Open vertical split for HEAD version.
   vert new
   setlocal buftype=nofile
   setlocal bufhidden=wipe
-
-  " Temporarily set buffer name for syntax detection.
   execute 'file HEAD:' . original_name
-
-  " Load HEAD version silently.
   execute 'silent! read !git show HEAD:' . f
+  " Delete the first line of the HEAD file that might contain
+  " an empty line or some metadata.
   1delete
-
-  " Detect file extension.
   filetype detect
-
-  " Enable diff mode.
   diffthis
   wincmd p
   diffthis
 endfunction
-
 nnoremap <leader>dvf :call GitFileDiff()<CR>
 
 " ----------------------------------------
+"
 " File explorer settings
+"
 " ----------------------------------------
 
-" Netrw setup
+" Open native Vim netrw file explorer.
 nnoremap <leader>e :Explore<CR>
-" Enable relative line numbers.
+
+" Enable relative line numbers inside netrw so it's easier to jump to the
+" specific file/folder.
 let g:netrw_bufsettings = 'noma nomod rnu nowrap ro nobl'
 
+" You need to run all these commands from netrw file explorer.
 function! NetrwMapping()
-  " Mark a file
+  " Mark a file. You need this for further file manipulations like
+  " file deletion/moving/copying.
   nmap <buffer> <TAB> mf         
   
-  " Unmark all marked files
+  " Unmark all marked files.
   nmap <buffer> <Leader><TAB> mu 
   
-  " Current browsing directory becomes markfile target
+  " Current directory under the cursor becomes the target.
+  " You need this to mark some directory where you want to
+  " move/copy marked files in.
   nmap <buffer> <S-TAB> mt       
   
-  " Create a new file
+  " Create a new file.
   nmap <buffer> ff %    
 
-  " Create a new directory
+  " Create a new directory.
   nmap <buffer> fd d             
   
-  " Edit file/directory name
+  " Edit file/directory name.
   nmap <buffer> fe R            
 
-  " Delete file or empty directory
+  " Delete file or empty directory.
   nmap <buffer> fr D             
 
-  " Copy marked files to marked-file target directory
+  " Copy marked files to target directory.
   nmap <buffer> fc mc         
 
   " After you mark your files you can put the cursor in a directory
-  " and this will assign the target directory and copy in one step
+  " and this will assign the target directory and copy in one step.
   nmap <buffer> fC mtmc          
 
-  " Move marked files to marked-file target directory
+  " Move marked files to target directory.
   nmap <buffer> fx mm            
   
-  " Same thing as fC but for moving files
+  " Same thing as fC but for moving files.
   nmap <buffer> fX mtmm          
   
-  " Run external shell command on marked files
+  " Run external shell command on marked files.
   nmap <buffer> f; mx            
   
-  " Bookmark current directory
+  " Bookmark current directory.
   nmap <buffer> fb mb            
   
-  " Go to previous bookmarked directory
+  " Go to previous bookmarked directory.
   nmap <buffer> fbg gb           
   
-  " Remove most recent bookmark
+  " Remove most recent bookmark.
   nmap <buffer> fbr mB           
   
-  " Show a list of marked files
+  " Show a list of marked files.
   nmap <buffer> flm :echo join(netrw#Expose("netrwmarkfilelist"), "\n")<CR> 
 endfunction
 
@@ -324,6 +372,12 @@ augroup END
 
 " Disable top banner (I in netrw to show back).
 let g:netrw_banner = 0
+
+" ----------------------------------------
+"
+" Opened file settings
+"
+" ----------------------------------------
 
 " Split window from the current file.
 nnoremap <leader>v :Vexplore<CR>
@@ -337,48 +391,67 @@ nnoremap <leader>< :vertical resize -10<CR>
 " Make all split windows equal size.
 nnoremap <leader>= :wincmd =<CR>
 
-" Open a new tab from the current file
+" Open a new tab from the current file.
+" You can jump to a specific tab with Ngt
+" where N is a number of tab.
 nnoremap <leader>t :tab split<CR>
 
-" List all previously opened files available in the buffer.
-" Should contain space after :b.
-" It will use wildmenu to display recent files in buffer.
-" nnoremap <leader>? :b 
+" ----------------------------------------
+"
+" Previously opened files
+"
+" ----------------------------------------
 
-" Alternatively we can use ls to see the latest files.
-" It can be more convenient because it shows file numbers that
-" you can use in order to jump to them.
 function! ListFileBuffers()
+  let max_items = 10
+  let path_max_width = 50
   let buffers = getbufinfo({'buflisted': 1})
-  " Sort by most recently used (descending)
   call sort(buffers, {a, b -> b.lastused - a.lastused})
+  let items = []
+  let filtered = []
   for b in buffers
     if filereadable(b.name)
-      echo b.bufnr . ' ' . fnamemodify(b.name, ':.')
+      call add(filtered, b)
     endif
   endfor
+  let filtered = filtered[:max_items - 1]
+  for b in filtered
+    let path = fnamemodify(b.name, ':.')
+    let path = s:TruncatePath(path, path_max_width)
+    call add(items, path)
+  endfor
+  if empty(items)
+    echo "No file buffers"
+    return
+  endif
+  call popup_menu(items, {
+        \ 'title': 'Previous files',
+        \ 'callback': {id, result ->
+        \   result > 0 ? execute('buffer ' . filtered[result - 1].bufnr) : 0
+        \ }
+        \ })
 endfunction
 command! LsFiles call ListFileBuffers()
-nnoremap <leader>? :LsFiles<CR>:b<Space>
-
-" Open previous file in the buffer.
-nnoremap <leader>, :bp <CR>
-
-" Open next file in the buffer.
-nnoremap <leader>. :bn <CR>
+nnoremap <leader>? :LsFiles<CR>
 
 " ----------------------------------------
+"
 " Language specific settings
+"
 " ----------------------------------------
+
+" You need to install a language server for desired language
+" since Vim cannot support all languages out of the box.
 
 " LSP configuration.
-" To install without plugin manager:
+" Install LSP plugin:
 " 1. mkdir -p ~/.vim/pack/lsp/start
 " 2. cd ~/.vim/pack/lsp/start
 " 3. git clone https://github.com/prabirshrestha/vim-lsp.git
 
 " Lsp for Rust.
 " Install rust-analyzer globally: rustup component add rust-analyzer
+" or in any other way that is applicable for your OS.
 if executable('rust-analyzer')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'rust-analyzer',
@@ -388,7 +461,7 @@ if executable('rust-analyzer')
 endif
 
 " Lsp for JS/TS.
-" Install language server globally: npm install -g typescript typescript-language-server
+" Install language server globally: npm install -g typescript typescript-language-server.
 if executable('typescript-language-server')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'ts-lsp',
@@ -397,19 +470,15 @@ if executable('typescript-language-server')
       \ })
 endif
 
-" Go to definition.
+" Go to definition. Place your cursor on variable/function or anything else
+" and run this command.
 nnoremap gd :LspDefinition<CR>
-
-" Show references to the word under the cursor in the current file.
-nnoremap gr :LspReferences<CR>
 
 " Show type information (hover).
 nnoremap K :LspHover<CR>
 
-" Rename all occurrences of the symbol in the current file.
-nnoremap <leader>rn :LspRename<CR>
-
-" Code action.
+" Code action. For example, if you have a missing import, you can
+" put your cursor over it and press <leader>ca and select autoimport option.
 nnoremap <leader>ca :LspCodeAction<CR>
 " Make the code actions list to be a floating window.
 let g:lsp_code_action_ui = 'float'
@@ -420,11 +489,4 @@ nnoremap <leader>si :e!<CR>:LspDocumentDiagnostics<CR>
 " Apply formatting for the current file.
 nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
 
-" Remove trailing whitespace from provided files.
-autocmd BufWritePre *.js :%s/\s\+$//e
-autocmd BufWritePre *.ts :%s/\s\+$//e
-autocmd BufWritePre *.jsx :%s/\s\+$//e
-autocmd BufWritePre *.tsx :%s/\s\+$//e
-autocmd BufWritePre *.css :%s/\s\+$//e
-autocmd BufWritePre *.html :%s/\s\+$//e
-autocmd BufWritePre *.rs :%s/\s\+$//e
+" You can check more LSP specific actions in the vim-lsp plugin documentation.

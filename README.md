@@ -8,7 +8,9 @@ Minimal setup.
 
 2. [Git](https://git-scm.com/) should be installed.
 
-3. If you type `vim --version` and don't see `+clipboard` then you need to install `vim-gtk3` package in your system if you're on Linux. You can check how to enable it on Mac.
+3. If you type `vim --version` and don't see `+clipboard` then you need to install `vim-gtk3`
+   package in your system if you're on Linux. You can research how to enable it on your specific
+   OS. You need this in order to be able to copy text into OS clipboard with `"+y`.
 
 4. Configuration lives in `~/.vimrc` or `~/.vim/vimrc` file.
 
@@ -22,9 +24,11 @@ Minimal setup.
 
 Leader key: `Space`. Leader is the button that you press before using keybindings combo.
 
-### File system
+### File explorer.
 
-From netrw:
+In order to open Netrw file explorer from file run: `Leader e`.
+
+Run these commands from file explorer:
 
 1. Create file: `f f`.
 
@@ -36,7 +40,7 @@ From netrw:
 
 #### Moving files
 
-From netrw:
+Run these commands from file explorer:
 
 1. Mark directory as target: `Shift Tab`. This is needed for moving/copying files to that target.
 
@@ -57,7 +61,7 @@ From netrw:
 
 #### Navigation
 
-From netrw:
+Run these commands from file explorer:
 
 1. Bookmark current directory: `f b`.
 
@@ -71,11 +75,9 @@ From netrw:
 
 6. Move one directory above: `-`.
 
-7. Open file tree (from file): `Leader e`.
+7. Open file in a new tab: Place cursor on file/directory press `t`.
 
-8. Open file in a new tab: Place cursor on file/directory press `t`.
-
-9. Navigate to opened tab by number: `Ngt` where N is a tab number.
+8. Navigate to opened tab by number: `Ngt` where N is a tab number.
 
 #### Global Search
 
@@ -87,11 +89,7 @@ From netrw:
 
 4. Search current word under the cursor in all files: `Leader s g c` then press Enter.
 
-5. Show list of recently opened files: `Leader ?`. If you're using `nnoremap <leader>? :b` then press Tab after this combo.
-
-6. Open previous recently opened file: `Leader ,`.
-
-7. Open next recently opened file: `Leader .`.
+5. Show list of recently opened files: `Leader ?`.
 
 #### File
 
@@ -113,7 +111,7 @@ From netrw:
 
 9. Follow path under the cursor: `g f`.
 
-10. Split vertically: `v` on file in netrw.
+10. Split vertically: `v` on file in file explorer.
 
 11. Split vertically: `Leader v` from file.
 
@@ -127,13 +125,11 @@ From netrw:
 
 16. Equalize split size: `Leader =`.
 
-17. Put cursor in normal mode on number and do `A` to increase number or `X` to decrease.
-
-18. Refresh current file: `Leader rr`.
+17. Refresh current file: `Leader rr`.
 
 ### Code aliases
 
-1. `console.log()` alias: `Ctrl l`.
+1. `console.log()` alias: `Ctrl l` from insert mode.
 
 ### Git
 
@@ -147,17 +143,15 @@ If merge has conflicts:
 
 4. Jump to start of previous change: `[c`.
 
-5. Obtain (get) difference (from other buffer): `do`.
+5. Obtain a difference from other buffer. Place your cursor on the conflict and run: `do`.
 
-6. Put difference (to other buffer): `dp`.
+6. Put difference to other buffer. Place your cursor on the conflict and run: `dp`.
 
 7. Use `:diffget N` where N is the number of screen with specific changes to accept that changes.
 
 List uncommited files:
 
 1. Use `Leader d v` to open the list of files that have been changed but not commited yet.
-
-2. Put the cursor on the path and press `g f` to open the file.
 
 Diffs:
 
@@ -169,7 +163,8 @@ Diffs:
 
 This configuration provide LSP support for Rust, JavaScript and TypeScript. You can see it in `.vimrc` file by searching for _Language specific settings_.
 
-Since LSP is not supported by Vim out of the box, you need to either use plugin manager or install LSP manually by doing:
+Since LSP is not supported by Vim out of the box for all languages, you need to install LSP for your
+desired language. You can do it without plugin manager:
 
 1. `mkdir -p ~/.vim/pack/vendor/start`.
 
@@ -191,17 +186,15 @@ For more information about LSP configuration see [vim-lsp](https://github.com/pr
 
 1. Go to definition: `g d`.
 
-2. Show all references to the word under the cursor in the current file: `g r`.
+2. Show type information for the word under the cursor (hover): `K`.
 
-3. Show type information for the word under the cursor (hover): `K`.
+3. Show code actions: `Leader c a`.
 
-4. Rename symbol in current file: `Leader r n`.
+4. Show lsp errors in current file: `Leader s i`.
 
-5. Show code actions: `Leader c a`.
+5. Apply formatting: `Leader f m`.
 
-6. Show lsp errors in current file: `Leader s i`.
-
-7. Apply formatting: `Leader f m`.
+You can check vim-lsp plugin if you want more actions.
 
 ## Other useful keybindings
 
