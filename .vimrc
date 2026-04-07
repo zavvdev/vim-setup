@@ -1,14 +1,39 @@
 " ----------------------------------------
 "
+" Reusable variables
+"
+" ----------------------------------------
+
+let s:popup_list_max_items = 20
+let s:popup_list_max_width = 70
+
+" ----------------------------------------
+"
 " Reusable functions
 "
 " ----------------------------------------
 
-function! s:TruncatePath(path, max)
-  if strlen(a:path) <= a:max
+function! s:TruncatePath(path)
+  if strlen(a:path) <= s:popup_list_max_width
     return a:path
   endif
-  return '…' . strpart(a:path, strlen(a:path) - a:max + 1)
+  return '…' . strpart(a:path, strlen(a:path) - s:popup_list_max_width + 1)
+endfunction
+
+function! s:ShowPopupMenu(title, items, callback)
+  if empty(a:items)
+    echo "No items"
+    return
+  endif
+  call popup_menu(a:items, {
+        \ 'title': a:title,
+        \ 'minwidth': s:popup_list_max_width,
+        \ 'maxwidth': s:popup_list_max_width,
+        \ 'padding': [0,1,0,1],
+        \ 'callback': a:callback,
+        \ 'filter': 'popup_filter_menu',
+        \ 'mapping': 1,
+        \ })
 endfunction
 
 " ----------------------------------------
@@ -270,13 +295,9 @@ function! GitChangedFilesPopup()
     echo "No changed files"
     return
   endif
-  let display = map(copy(s:git_changed_files), 's:TruncatePath(v:val, 60)')
-  call popup_menu(display, {
-        \ 'title': 'Changed files',
-        \ 'callback': function('s:OpenGitChangedFileFromPopup'),
-        \ 'filter': 'popup_filter_menu',
-        \ 'mapping': 1,
-        \ })
+  let filtered = s:git_changed_files[:s:popup_list_max_items - 1]
+  let display = map(copy(filtered), {_, v -> s:TruncatePath(v)})
+  call s:ShowPopupMenu('Changed files', display, function('s:OpenGitChangedFileFromPopup'))
 endfunction
 nnoremap <leader>dv :call GitChangedFilesPopup()<CR>
 
@@ -409,32 +430,18 @@ nnoremap <leader>t :tab split<CR>
 " ----------------------------------------
 
 function! ListFileBuffers()
-  let max_items = 10
-  let path_max_width = 50
   let buffers = getbufinfo({'buflisted': 1})
   call sort(buffers, {a, b -> b.lastused - a.lastused})
   let items = []
-  let filtered = []
   for b in buffers
     if filereadable(b.name)
-      call add(filtered, b)
+      call add(items, b)
     endif
   endfor
-  let filtered = filtered[:max_items - 1]
-  for b in filtered
-    let path = fnamemodify(b.name, ':.')
-    let path = s:TruncatePath(path, path_max_width)
-    call add(items, path)
-  endfor
-  if empty(items)
-    echo "No file buffers"
-    return
-  endif
-  call popup_menu(items, {
-        \ 'title': 'Previous files',
-        \ 'callback': {id, result ->
-        \   result > 0 ? execute('buffer ' . filtered[result - 1].bufnr) : 0
-        \ }
+  let filtered = items[:s:popup_list_max_items - 1]
+  let display = map(copy(filtered), {_, b -> s:TruncatePath(fnamemodify(b.name, ':.'))})
+  call s:ShowPopupMenu('Previous files', display, {id, result ->
+        \ result > 0 ? execute('buffer ' . filtered[result - 1].bufnr) : 0
         \ })
 endfunction
 command! LsFiles call ListFileBuffers()
@@ -474,6 +481,16 @@ if executable('typescript-language-server')
       \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
       \ 'allowlist': ['javascript','javascriptreact','typescript','typescriptreact'],
       \ })
+endif
+
+" Lsp for Python.
+" Install language server globally: pip install 'python-lsp-server[all]'
+if executable('pylsp')
+    autocmd User lsp_setup call lsp#register_server({
+        \ 'name': 'pylsp',
+        \ 'cmd': {server_info->['pylsp']},
+        \ 'allowlist': ['python'],
+        \ })
 endif
 
 " Go to definition. Place your cursor on variable/function or anything else

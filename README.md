@@ -162,7 +162,7 @@ Diffs:
 
 ## LSP
 
-This configuration provides LSP support for Rust, JavaScript, and TypeScript. You can see it in `.vimrc` by searching for _Language specific settings_.
+This configuration provides LSP support for Rust, JavaScript, TypeScript and Python. You can see it in `.vimrc` by searching for _Language specific settings_.
 
 Since Vim does not support LSP out of the box for all languages, you need to install LSP for your desired language. You can do this without a plugin manager:
 
@@ -174,11 +174,13 @@ Since Vim does not support LSP out of the box for all languages, you need to ins
 
 This is how you can install any plugin — simply clone its repository into that directory. You can name "vendor" whatever you like.
 
-How to install LSP for Rust and JS/TS:
+How to install LSP for Rust, JS/TS and Python:
 
 1. `rustup component add rust-analyzer`.
 
 2. `npm install -g typescript typescript-language-server`.
+
+3. `pip install 'python-lsp-server[all]'`
 
 For more information about LSP configuration, see [vim-lsp](https://github.com/prabirshrestha/vim-lsp).
 
