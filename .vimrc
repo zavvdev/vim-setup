@@ -121,7 +121,23 @@ vnoremap <leader>ar <C-v>
 
 " Refresh file. Useful if for any reason
 " lps warnings are cached.
-nnoremap <leader>rr :e!<CR>
+" nnoremap <leader>rr :e!<CR>
+
+" Refresh without cursor reset.
+nnoremap <leader>rr :call <SID>RefreshPreserveCursor()<CR>
+function! s:RefreshPreserveCursor()
+    let view = winsaveview()
+    edit!
+    call winrestview(view)
+endfunction
+
+" Refresh buffer on save.
+" Use it if for some reason LSP errors
+" persist after you fixed them.
+augroup reload_preserve_cursor
+  autocmd!
+  autocmd BufWritePost * call <SID>RefreshPreserveCursor()
+augroup END
 
 " ----------------------------------------
 "
@@ -317,6 +333,10 @@ function! GitFileDiff()
   " Delete the first line of the HEAD file that might contain
   " an empty line or some metadata.
   1delete
+
+  " Disable LSP diagnostics ONLY for the HEAD buffer
+  let b:lsp_diagnostics_enable = 0
+
   filetype detect
   diffthis
   wincmd p
@@ -511,5 +531,9 @@ nnoremap <leader>si :e!<CR>:LspDocumentDiagnostics<CR>
 
 " Apply formatting for the current file.
 nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
+
+" Disable LSP diagnostics while in insert mode.
+let g:lsp_diagnostics_echo_cursor = 0
+let g:lsp_diagnostics_float_cursor = 0
 
 " You can check more LSP specific actions in the vim-lsp plugin documentation.
