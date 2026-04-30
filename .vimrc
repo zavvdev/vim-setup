@@ -536,4 +536,12 @@ nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
 let g:lsp_diagnostics_echo_cursor = 0
 let g:lsp_diagnostics_float_cursor = 0
 
+" LSP autocompletion.
+set omnifunc=lsp#omni#complete
+set completeopt=menu,menuone,noselect
+" Trigger completion.
+inoremap <C-x> <C-x><C-o>
+" Confirm selection safely with Tab.
+inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
+
 " You can check more LSP specific actions in the vim-lsp plugin documentation.
