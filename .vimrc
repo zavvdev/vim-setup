@@ -505,6 +505,20 @@ endif
 
 " Lsp for Python.
 " Install language server globally: pip install 'python-lsp-server[all]'
+"
+" Add this after allowlist if you want to disable default pylsp linter rules in case
+" you use something else like ruff.
+"\ 'workspace_config': {
+"\     'pylsp': {
+"\         'plugins': {
+"\             'pycodestyle': {'enabled': v:false},
+"\             'pyflakes': {'enabled': v:false},
+"\             'mccabe': {'enabled': v:false},
+"\             'autopep8': {'enabled': v:false},
+"\             'yapf': {'enabled': v:false},
+"\         }
+"\     }
+"\ }
 if executable('pylsp')
     autocmd User lsp_setup call lsp#register_server({
         \ 'name': 'pylsp',
