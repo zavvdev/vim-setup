@@ -559,3 +559,30 @@ inoremap <C-x> <C-x><C-o>
 inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
 
 " You can check more LSP specific actions in the vim-lsp plugin documentation.
+
+" =============================================================
+" COLOR SCHEME OVERRIDE START
+" =============================================================
+
+" THEME AGNOSTIC START
+
+" Remove red color from spelling mistake words
+" and make them default color underlined.
+highlight SpellBad   cterm=underline ctermfg=NONE ctermbg=NONE gui=underline guifg=NONE guibg=NONE
+highlight SpellCap   cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
+highlight SpellRare  cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
+highlight SpellLocal cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
+
+" THEME AGNOSTIC END
+
+" LANGUAGE SPECIFIC START
+
+" Rust
+" Three slashes comment block. Make it look like a default comment color.
+highlight link rustCommentLineDoc Comment
+
+" LANGUAGE SPECIFIC END
+
+" =============================================================
+" COLOR SCHEME OVERRIDE END
+" =============================================================
