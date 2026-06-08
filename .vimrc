@@ -566,12 +566,39 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
 
 " THEME AGNOSTIC START
 
-" Remove red color from spelling mistake words
-" and make them default color underlined.
-highlight SpellBad   cterm=underline ctermfg=NONE ctermbg=NONE gui=underline guifg=NONE guibg=NONE
-highlight SpellCap   cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
-highlight SpellRare  cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
-highlight SpellLocal cterm=underline ctermfg=NONE ctermbg=NONE gui=undercurl guifg=NONE guibg=NONE
+" Remove color from spelling mistake words and make them default color and underlined.
+ augroup SpellColorFix
+ autocmd!
+     autocmd ColorScheme * highlight! clear SpellBad
+     autocmd ColorScheme * highlight! clear SpellCap
+     autocmd ColorScheme * highlight! clear SpellRare
+     autocmd ColorScheme * highlight! clear SpellLocal
+     autocmd ColorScheme * highlight! SpellBad
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellCap
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellRare
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellLocal
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ augroup END
+ highlight! clear SpellBad
+ highlight! SpellBad
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellCap
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellRare
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellLocal
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
 
 " THEME AGNOSTIC END
 
