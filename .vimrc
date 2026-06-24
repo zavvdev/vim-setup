@@ -618,8 +618,14 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
 
 " THEME SPECIFIC START (DARK)
 
-" Or override the background color directly
+" Override the background color.
 highlight Normal guibg=#1f2029 ctermbg=235
+
+" Override status line background color for active window.
+highlight StatusLine guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=15
+
+" Override status line background color for inactive window.
+highlight StatusLineNC guibg=#1d1e27 guifg=#555555 ctermbg=234 ctermfg=240
 
 " THEME SPECIFIC END (DARK)
 
