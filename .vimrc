@@ -167,9 +167,12 @@ set termguicolors
 
 " Set theme.
 " Light.
-colorscheme shine
+" colorscheme shine
 " Dark.
-" colorscheme habamax
+colorscheme habamax
+
+" Set background type
+set background=dark
 
 " ----------------------------------------
 "
@@ -524,6 +527,17 @@ if executable('pylsp')
         \ 'name': 'pylsp',
         \ 'cmd': {server_info->['pylsp']},
         \ 'allowlist': ['python'],
+        \ 'workspace_config': {
+        \     'pylsp': {
+        \         'plugins': {
+        \             'pycodestyle': {'enabled': v:false},
+        \             'pyflakes': {'enabled': v:false},
+        \             'mccabe': {'enabled': v:false},
+        \             'autopep8': {'enabled': v:false},
+        \             'yapf': {'enabled': v:false},
+        \         }
+        \     }
+        \ }
         \ })
 endif
 
@@ -601,6 +615,13 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
     \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
 
 " THEME AGNOSTIC END
+
+" THEME SPECIFIC START (DARK)
+
+" Or override the background color directly
+highlight Normal guibg=#1f2029 ctermbg=235
+
+" THEME SPECIFIC END (DARK)
 
 " LANGUAGE SPECIFIC START
 
