@@ -627,6 +627,14 @@ highlight StatusLine guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=15
 " Override status line background color for inactive window.
 highlight StatusLineNC guibg=#1d1e27 guifg=#555555 ctermbg=234 ctermfg=240
 
+" Popup window styles
+ highlight Pmenu guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=246
+ highlight PmenuSel guibg=#3d3f52 guifg=#ffffff ctermbg=60 ctermfg=15 gui=bold
+ highlight PmenuSbar guibg=#1d1e27 ctermbg=234
+ highlight PmenuThumb guibg=#555555 ctermbg=240
+
+ highlight VertSplit guibg=#1f2029 guifg=#3d3f52 ctermbg=235 ctermfg=60
+
 " THEME SPECIFIC END (DARK)
 
 " LANGUAGE SPECIFIC START
