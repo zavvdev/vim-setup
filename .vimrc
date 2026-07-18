@@ -640,6 +640,11 @@ highlight StatusLineNC guibg=#1d1e27 guifg=#555555 ctermbg=234 ctermfg=240
 
  highlight VertSplit guibg=#1f2029 guifg=#3d3f52 ctermbg=235 ctermfg=60
 
+" Tab line styles
+highlight TabLineSel  guibg=#3a3c4f guifg=#a8a8a8 ctermbg=60 ctermfg=15 gui=bold
+highlight TabLine     guibg=#262838 guifg=#6b6b6b ctermbg=236 ctermfg=242
+highlight TabLineFill guibg=#26272f ctermbg=236
+
 " THEME SPECIFIC END (DARK)
 
 " LANGUAGE SPECIFIC START
