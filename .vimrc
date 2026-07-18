@@ -299,17 +299,19 @@ nnoremap <leader>dvm :!git mergetool<CR>
 
 " Keep track of all changed file after we opened one.
 let s:git_changed_files = []
+let s:git_root = ''
 
 function! s:OpenGitChangedFileFromPopup(id, result)
   if a:result <= 0
     return
   endif
   let file = s:git_changed_files[a:result - 1]
-  execute 'edit ' . fnameescape(file)
+  execute 'edit ' . fnameescape(s:git_root . '/' . file)
 endfunction
 
 function! GitChangedFilesPopup()
   let s:git_changed_files = systemlist('git diff --name-only')
+  let s:git_root = get(systemlist('git rev-parse --show-toplevel'), 0, '')
   if empty(s:git_changed_files)
     echo "No changed files"
     return
@@ -564,6 +566,9 @@ nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
 let g:lsp_diagnostics_echo_cursor = 0
 let g:lsp_diagnostics_float_cursor = 0
 
+" Disable code action indicator that appears on the left side of the line (A>).
+let g:lsp_document_code_action_signs_enabled = 0
+
 " LSP autocompletion.
 set omnifunc=lsp#omni#complete
 set completeopt=menu,menuone,noselect
@@ -648,3 +653,115 @@ highlight link rustCommentLineDoc Comment
 " =============================================================
 " COLOR SCHEME OVERRIDE END
 " =============================================================
+
+" ----------------------------------------
+"
+" Git signs
+"
+" Show changed lines in the left gutter.
+"
+" ----------------------------------------
+
+" Define the sign symbols shown in the gutter. Guards prevent redefining
+" them if vimrc is re-sourced while they already exist.
+if empty(sign_getdefined('GitSignAdd'))
+  sign define GitSignAdd    text=+ texthl=GitSignAdd
+endif
+if empty(sign_getdefined('GitSignChange'))
+  sign define GitSignChange text=~ texthl=GitSignChange
+endif
+if empty(sign_getdefined('GitSignDelete'))
+  sign define GitSignDelete text=- texthl=GitSignDelete
+endif
+
+" Set gutter symbol colors for the initial load.
+highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
+highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
+highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
+
+" Re-apply colors whenever the color scheme changes, since colorscheme
+" commands reset all highlight groups.
+autocmd ColorScheme * highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
+autocmd ColorScheme * highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
+autocmd ColorScheme * highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
+
+function! s:UpdateGitSigns()
+  let bufnr    = bufnr('%')
+  let filepath = expand('%:p')
+
+  " Clear all previously placed signs for this buffer before re-computing.
+  call sign_unplace('GitSigns', {'buffer': bufnr})
+
+  " Skip non-file buffers (e.g. netrw, help) and files outside a git repo.
+  if empty(filepath) || !filereadable(filepath)
+    return
+  endif
+  if empty(finddir('.git', fnamemodify(filepath, ':h') . ';'))
+    return
+  endif
+
+  " Get the unified diff between HEAD and the working copy.
+  let diff = systemlist('git diff HEAD -- ' . shellescape(filepath))
+  if empty(diff)
+    return
+  endif
+
+  " State variables for walking the diff hunk by hunk.
+  let in_hunk    = 0  " whether we are currently inside a hunk
+  let cur_line   = 0  " current line number in the new file
+  let hunk_start = 0  " first line of the current hunk in the new file
+  let hunk_adds  = [] " line numbers of added lines collected in the hunk
+  let hunk_dels  = 0  " count of deleted lines in the hunk
+
+  " Append a sentinel hunk header so the last real hunk is always flushed.
+  for line in (diff + ['@@ @@'])
+    if line =~# '^@@'
+      " Flush the previous hunk: classify each added line as either a
+      " Change (it has a paired deletion) or a pure Add.
+      if in_hunk && (!empty(hunk_adds) || hunk_dels > 0)
+        let mods = min([len(hunk_adds), hunk_dels])
+        for i in range(len(hunk_adds))
+          let sname = i < mods ? 'GitSignChange' : 'GitSignAdd'
+          call sign_place(0, 'GitSigns', sname, bufnr, {'lnum': hunk_adds[i]})
+        endfor
+        " If there were more deletions than additions, mark the hunk start
+        " line with a Delete sign (the deleted lines have no new-file line).
+        if hunk_dels > len(hunk_adds)
+          call sign_place(0, 'GitSigns', 'GitSignDelete', bufnr, {'lnum': max([1, hunk_start])})
+        endif
+      endif
+
+      " Parse the new-file start line from the @@ header, e.g. '@@ -1,4 +3,7 @@'.
+      let m = matchlist(line, '^@@ -\d\+\%(,\d*\)\? +\(\d\+\)\%(,\d*\)\? @@')
+      if !empty(m)
+        let in_hunk    = 1
+        let cur_line   = str2nr(m[1])
+        let hunk_start = cur_line
+        let hunk_adds  = []
+        let hunk_dels  = 0
+      endif
+
+    elseif in_hunk
+      " Walk each diff line: '+' is an addition, '-' is a deletion,
+      " ' ' is context (unchanged) — all advance the new-file line counter
+      " except deletions, which have no corresponding line in the new file.
+      if line[0] ==# '+'
+        call add(hunk_adds, cur_line)
+        let cur_line += 1
+      elseif line[0] ==# '-'
+        let hunk_dels += 1
+      elseif line[0] ==# ' '
+        let cur_line += 1
+      endif
+    endif
+  endfor
+endfunction
+
+" Refresh signs whenever the buffer is entered, saved, or the cursor rests.
+" timer_start(0, ...) defers the call to after the current event completes,
+" avoiding any flicker or interference with other autocmds.
+augroup GitSigns
+  autocmd!
+  autocmd BufEnter,BufWritePost,CursorHold,CursorHoldI *
+        \ call timer_start(0, {-> s:UpdateGitSigns()})
+augroup END
