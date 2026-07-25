@@ -431,8 +431,11 @@ let g:netrw_banner = 0
 "
 " ----------------------------------------
 
-" Split window from the current file.
+" Split window vertically from the current file.
 nnoremap <leader>v :Vexplore<CR>
+
+" Split window horizontally from the current file.
+nnoremap <leader>h :Hexplore<CR>
 
 " Increase size of the current split window.
 nnoremap <leader>> :vertical resize +10<CR>
