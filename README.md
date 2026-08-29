@@ -38,44 +38,30 @@ Run these commands from the file explorer:
 
 4. Delete the file or empty directory under the cursor: `f r`.
 
-#### Moving Files
+#### Moving/Copying Files
 
 Run these commands from the file explorer:
 
-1. Mark a directory as the target: `Shift Tab`. This is required when moving or copying files to that directory.
+1. Mark/unmark a file or directory: `Tab`.
 
-2. Mark/unmark a file or directory: `Tab`.
+2. Unmark all marked files and directories: `Leader Tab`.
 
-3. Unmark all marked files and directories: `Leader Tab`.
+3. Copy marked files/directories to the destination directory (prompted): `f c`.
 
-4. Copy marked files/directories to the target directory: `f c`.
+4. Move marked files/directories to the destination directory (prompted): `f x`.
 
-5. Copy marked files/directories to the directory under the cursor: `f C`.
-
-6. Move marked files/directories to the target directory: `f x`.
-
-7. Move marked files/directories to the directory under the cursor: `f X`.
-
-8. Run a shell command on marked files/directories: `f ;`.
+5. Run a shell command on marked files/directories: `f ;`.
    For example, mark a non-empty directory, use _f ;_, then type _rm -r_ to delete it.
 
 #### Navigation
 
 Run these commands from the file explorer:
 
-1. Bookmark the current directory: `f b`.
+1. Move up one directory: `-`.
 
-2. Remove the most recent bookmark: `f b r`.
+2. Open a file in a new tab: place the cursor on a file/directory and press `t`.
 
-3. Go to the previous bookmarked directory: `f b g`.
-
-4. Show a list of marked files: `f l m`.
-
-5. Move up one directory: `-`.
-
-6. Open a file in a new tab: place the cursor on a file/directory and press `t`.
-
-7. Navigate to an open tab by number: `Ngt`, where N is the tab number.
+3. Navigate to an open tab by number: `Ngt`, where N is the tab number.
 
 #### Global Search
 
@@ -391,6 +377,8 @@ See the vim-lsp plugin documentation for additional actions.
 `/pattern` - search for a pattern.
 
 `?pattern` - search backward for a pattern.
+
+`?\<pattern\>` - search backward for an exact pattern.
 
 `n` - go to the next match.
 

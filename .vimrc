@@ -362,6 +362,87 @@ nnoremap <leader>e :Explore<CR>
 " specific file/folder.
 let g:netrw_bufsettings = 'noma nomod rnu nowrap ro nobl'
 
+" Copy or move marked files/dirs to a path you type (with completion).
+" If the destination already has an item with the same name, prompts to
+" overwrite, rename, skip, or cancel the whole operation.
+function! s:MoveOrCopy(is_move)
+  let l:marked = netrw#Expose("netrwmarkfilelist")
+  if empty(l:marked)
+    echo "No files marked (press <Tab> to mark files/dirs first)"
+    return
+  endif
+
+  let l:dest = input(a:is_move ? 'Move to: ' : 'Copy to: ', b:netrw_curdir . '/', 'dir')
+  redraw
+  if empty(l:dest)
+    echo "Cancelled (no destination given)"
+    return
+  endif
+  if !isdirectory(l:dest)
+    call mkdir(l:dest, 'p')
+  endif
+  let l:dest = substitute(fnamemodify(l:dest, ':p'), '/$', '', '')
+
+  let l:cmd = a:is_move ? 'mv' : 'cp -r'
+  let l:errors = []
+  let l:copied = 0
+
+  for f in l:marked
+    " Normalize to a full path: if netrw gave us a bare filename,
+    " prefix it with the current netrw directory.
+    let l:src = f
+    if l:src !~# '^/'
+      let l:src = b:netrw_curdir . '/' . l:src
+    endif
+    let l:src = substitute(l:src, '/$', '', '')
+    let l:basename = fnamemodify(l:src, ':t')
+
+    let l:target = l:dest . '/' . l:basename
+
+    " Check for a name conflict at the destination.
+    if isdirectory(l:target) || filereadable(l:target)
+      let l:choice = confirm(l:basename . ' already exists in destination.',
+            \ "&Overwrite\n&Rename\n&Skip\n&Cancel all", 3)
+      if l:choice == 0 || l:choice == 4
+        echo "Cancelled remaining operations"
+        break
+      elseif l:choice == 3
+        call add(l:errors, l:src . ' -> skipped (already exists)')
+        continue
+      elseif l:choice == 2
+        let l:newname = input('New name: ', l:basename)
+        redraw
+        if empty(l:newname)
+          call add(l:errors, l:src . ' -> skipped (no name given)')
+          continue
+        endif
+        let l:target = l:dest . '/' . l:newname
+      endif
+      " choice == 1 (Overwrite) falls through and uses the original l:target
+    endif
+
+    let l:full_cmd = l:cmd . ' ' . shellescape(l:src) . ' ' . shellescape(l:target)
+    let l:output = system(l:full_cmd)
+    if v:shell_error != 0
+      call add(l:errors, l:src . ' failed: ' . substitute(l:output, '\n', ' ', 'g'))
+    else
+      let l:copied += 1
+    endif
+  endfor
+
+  normal mu
+  edit!
+
+  if l:copied > 0
+    echo (a:is_move ? 'Moved ' : 'Copied ') . l:copied . ' item(s) to ' . l:dest
+  endif
+  if !empty(l:errors)
+    echohl ErrorMsg
+    echo join(l:errors, "\n")
+    echohl None
+  endif
+endfunction
+
 " You need to run all these commands from netrw file explorer.
 function! NetrwMapping()
   " Mark a file. You need this for further file manipulations like
@@ -374,8 +455,9 @@ function! NetrwMapping()
   " Current directory under the cursor becomes the target.
   " You need this to mark some directory where you want to
   " move/copy marked files in.
-  nmap <buffer> <S-TAB> mt       
-  
+  " Commented out since moved to MoveOrCopy.
+  " nmap <buffer> <S-TAB> mt
+
   " Create a new file.
   nmap <buffer> ff %    
 
@@ -385,36 +467,29 @@ function! NetrwMapping()
   " Edit file/directory name.
   nmap <buffer> fe R            
 
-  " Delete file or empty directory.
+  " Delete file/directory.
   nmap <buffer> fr D             
 
   " Copy marked files to target directory.
-  nmap <buffer> fc mc         
-
-  " After you mark your files you can put the cursor in a directory
-  " and this will assign the target directory and copy in one step.
-  nmap <buffer> fC mtmc          
+  " Commented out because default netrw moves just
+  " a contents of directories but not dirs itself.
+  " Migrated to MoveOrCopy.
+  " nmap <buffer> fc mc
 
   " Move marked files to target directory.
-  nmap <buffer> fx mm            
-  
-  " Same thing as fC but for moving files.
-  nmap <buffer> fX mtmm          
-  
+  " Commented out for consistency with MoveOrCopy.
+  " nmap <buffer> fx mm
+
+  " Copy marked files/directories. You'll be prompted to select
+  " a destination.
+  nmap <buffer> fc :call <SID>MoveOrCopy(0)<CR>
+
+  " Move marked files/directories. You'll be prompted to select
+  " a destination.
+  nmap <buffer> fx :call <SID>MoveOrCopy(1)<CR>
+
   " Run external shell command on marked files.
   nmap <buffer> f; mx            
-  
-  " Bookmark current directory.
-  nmap <buffer> fb mb            
-  
-  " Go to previous bookmarked directory.
-  nmap <buffer> fbg gb           
-  
-  " Remove most recent bookmark.
-  nmap <buffer> fbr mB           
-  
-  " Show a list of marked files.
-  nmap <buffer> flm :echo join(netrw#Expose("netrwmarkfilelist"), "\n")<CR> 
 endfunction
 
 augroup netrw_mapping
