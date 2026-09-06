@@ -502,10 +502,10 @@ augroup END
 let g:netrw_banner = 0
 
 " Tree-style directory listing instead of the flat list.
-let g:netrw_liststyle = 3
+" let g:netrw_liststyle = 3
 
 " Sets the split width percentage for Vexplore/Hexplore so it doesn't default to 50%.
-let g:netrw_winsize = 25
+" let g:netrw_winsize = 25
 
 " ----------------------------------------
 "
