@@ -228,7 +228,7 @@ augroup gitbranch
   autocmd!
   autocmd BufEnter,DirChanged * call UpdateGitBranch()
 augroup END
-let &statusline .= ' %{empty(get(b:, "git_branch", "")) ? "" : " " . get(b:, "git_branch")}'
+let &statusline .= ' %{empty(get(b:, "git_branch", "")) ? "" : "⎇ " . get(b:, "git_branch")}'
 
 " ----------------------------------------
 "
