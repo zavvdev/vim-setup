@@ -328,22 +328,34 @@ nnoremap <leader>dvr :!git restore %<CR>:e!<CR>
 
 " Show diff for the current file.
 function! GitFileDiff()
-  let root = systemlist('git rev-parse --show-toplevel')[0]
-  let f = substitute(expand('%:p'), root.'/', '', '')
-  let original_name = expand('%:t')
+  let root = get(systemlist('git rev-parse --show-toplevel'), 0, '')
+  if empty(root)
+    echo "Not in git repository"
+    return
+  endif
+
+  let f = substitute(expand('%:p'), root . '/', '', '')
+  let cur_syntax = &syntax
+
   vert new
   setlocal buftype=nofile
   setlocal bufhidden=wipe
-  execute 'file HEAD:' . original_name
-  execute 'silent! read !git show HEAD:' . f
-  " Delete the first line of the HEAD file that might contain
-  " an empty line or some metadata.
+  setlocal noswapfile
+  setlocal modifiable
+  execute 'file ' . fnameescape('HEAD:' . f)
+  execute 'silent! read !git show HEAD:' . shellescape(f)
   1delete
 
-  " Disable LSP diagnostics ONLY for the HEAD buffer
-  let b:lsp_diagnostics_enable = 0
+  if !empty(cur_syntax)
+    execute 'setlocal syntax=' . cur_syntax
+  endif
 
-  filetype detect
+  let b:lsp_diagnostics_enabled = 0
+  if exists('*lsp#disable_diagnostics_for_buffer')
+    call lsp#disable_diagnostics_for_buffer(bufnr('%'))
+  endif
+
+  setlocal nomodifiable readonly
   diffthis
   wincmd p
   diffthis
