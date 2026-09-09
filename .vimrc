@@ -1,17 +1,23 @@
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Reusable variables
+" REUSABLE VARIABLES START
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
 let s:popup_list_max_items = 20
 let s:popup_list_max_width = 70
 
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Reusable functions
+" REUSABLE VARIABLES END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+"
+" REUSABLE FUNCTIONS START
+"
+" -----------------------------------------------------------
 
 function! s:TruncatePath(path)
   if strlen(a:path) <= s:popup_list_max_width
@@ -37,17 +43,24 @@ function! s:ShowPopupMenu(title, items, callback)
         \ })
 endfunction
 
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Basic settings
+" REUSABLE FUNCTIONS END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
-" Disable compatibility with vi editor in order to use modern Vim features.
+" -----------------------------------------------------------
+"
+" BASIC SETTINGS START
+"
+" -----------------------------------------------------------
+
+" Disable compatibility with vi editor in order to use
+" modern Vim features.
 set nocompatible
 
-" Setup leader symbol. This is the button that you press before
-" using another combo keybinding.
+" Setup leader symbol. This is the button that you press
+" before using another combo keybinding.
 nnoremap <SPACE> <Nop>
 let mapleader=" "
 
@@ -65,12 +78,6 @@ set shiftwidth=4
 set autoindent
 set textwidth=100
 set smartindent
-
-" Use tabs for Makefile since required.
-autocmd FileType make setlocal noexpandtab
-
-" Use 2 spaces for JS/TS and their JSX variants.
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact setlocal tabstop=2 softtabstop=2 shiftwidth=2
 
 " Spell checking.
 set spelllang=en_us
@@ -94,7 +101,8 @@ set relativenumber
 " Show the matching part of pairs [] {} and ().
 set showmatch
 
-" How long Vim waits (in milliseconds) before triggering certain idle events.
+" How long Vim waits (in milliseconds) before triggering
+" certain idle events.
 set updatetime=800
 
 " Setup cursor appearance for different modes.
@@ -106,23 +114,6 @@ let &t_EI = "\e[1 q"
 " view auto completion options. It does not rely on LSP.
 inoremap <S-Tab> <C-n>
 set complete=.,w,b,u,t
-
-" Multi line editing.
-" Select multiple lines in visual mode
-" and press <leader>aa. Then you can add
-" any prefix you want and press Escape.
-" To remove prefix select lines in visual
-" mode in a way that the last selection
-" captures the whole prefix you want to remove.
-" Press <leader>ar which will select prefix for
-" each row. Then press x which will remove prefix.
-" Can be used for commenting.
-vnoremap <leader>aa <C-v>A
-vnoremap <leader>ar <C-v>
-
-" Refresh file. Useful if for any reason
-" lps warnings are cached.
-" nnoremap <leader>rr :e!<CR>
 
 " Refresh without cursor reset.
 nnoremap <leader>rr :call <SID>RefreshPreserveCursor()<CR>
@@ -140,46 +131,70 @@ augroup reload_preserve_cursor
   autocmd BufWritePost * call <SID>RefreshPreserveCursor()
 augroup END
 
-" ----------------------------------------
+" Auto-reload files changed outside Vim
+" Useful when switching between terminal tools, git operations,
+" generators, tests.
+set autoread
+augroup auto_checktime
+  autocmd!
+  autocmd FocusGained,BufEnter * checktime
+augroup END
+
+" Split window vertically from the current file.
+nnoremap <leader>v :Vexplore<CR>
+
+" Split window horizontally from the current file.
+nnoremap <leader>h :Hexplore<CR>
+
+" Increase size of the current split window.
+nnoremap <leader>> :vertical resize +10<CR>
+
+" Decrease size of the current split window.
+nnoremap <leader>< :vertical resize -10<CR>
+
+" Make all split windows equal size.
+nnoremap <leader>= :wincmd =<CR>
+
+" Open a new tab from the current file.
+" You can jump to a specific tab with Ngt
+" where N is a number of tab.
+nnoremap <leader>t :tab split<CR>
+
+" -----------------------------------------------------------
 "
-" Code aliases
+" BASIC SETTINGS END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
-" Ctrl + l alias for Browser console.log API.
-inoremap <C-l> console.log()<Left>
-
-" Ctrl + p alias for Rust's println! macro.
-inoremap <C-p> println!()<Left>
-
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Theme settings
+" MULTI LINE EDITING START
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
-" Enable color themes.
-if !has('gui_running')
-	set t_Co=256
-endif
+" Select multiple lines in visual mode
+" and press <leader>aa. Then you can add
+" any prefix you want and press Escape.
+" To remove prefix select lines in visual
+" mode in a way that the last selection
+" captures the whole prefix you want to remove.
+" Press <leader>ar which will select prefix for
+" each row. Then press x which will remove prefix.
+" Can be used for commenting.
+vnoremap <leader>aa <C-v>A
+vnoremap <leader>ar <C-v>
 
-" Enable true colors support.
-set termguicolors
-
-" Set theme.
-" Light.
-" colorscheme shine
-" Dark.
-colorscheme habamax
-
-" Set background type
-set background=dark
-
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Status line settings
+" MULTI LINE EDITING END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+"
+" STATUS LINE START
+"
+" -----------------------------------------------------------
 
 " Always show status line.
 set laststatus=2
@@ -231,20 +246,111 @@ augroup gitbranch
 augroup END
 let &statusline .= ' %{empty(get(b:, "git_branch", "")) ? "" : "⎇ " . get(b:, "git_branch")}'
 
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Search settings
+" STATUS LINE END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
-" Set absolute path to be able to search in all sub directories.
+" -----------------------------------------------------------
+"
+" THEME SETTINGS START
+"
+" -----------------------------------------------------------
+
+" Enable color themes.
+if !has('gui_running')
+	set t_Co=256
+endif
+
+" Enable true colors support.
+set termguicolors
+
+" Set theme.
+colorscheme habamax
+
+" Set background type.
+set background=dark
+
+" Remove color from spelling mistake words and make them
+" default color and underlined.
+ augroup SpellColorFix
+ autocmd!
+     autocmd ColorScheme * highlight! clear SpellBad
+     autocmd ColorScheme * highlight! clear SpellCap
+     autocmd ColorScheme * highlight! clear SpellRare
+     autocmd ColorScheme * highlight! clear SpellLocal
+     autocmd ColorScheme * highlight! SpellBad
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellCap
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellRare
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+     autocmd ColorScheme * highlight! SpellLocal
+        \ term=underline cterm=underline gui=underline ctermfg=NONE
+        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ augroup END
+ highlight! clear SpellBad
+ highlight! SpellBad
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellCap
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellRare
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+ highlight! SpellLocal
+    \ term=underline cterm=underline gui=underline ctermfg=NONE
+    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
+
+" Override the background color.
+highlight Normal guibg=#1f2029 ctermbg=235
+
+" Override status line background color for active window.
+highlight StatusLine guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=15
+
+" Override status line background color for inactive window.
+highlight StatusLineNC guibg=#1d1e27 guifg=#555555 ctermbg=234 ctermfg=240
+
+" Popup window styles
+highlight Pmenu guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=246
+highlight PmenuSel guibg=#3d3f52 guifg=#ffffff ctermbg=60 ctermfg=15 gui=bold
+highlight PmenuSbar guibg=#1d1e27 ctermbg=234
+highlight PmenuThumb guibg=#555555 ctermbg=240
+
+highlight VertSplit guibg=#1f2029 guifg=#3d3f52 ctermbg=235 ctermfg=60
+
+" Tab line styles
+highlight TabLineSel  guibg=#3a3c4f guifg=#a8a8a8 ctermbg=60 ctermfg=15 gui=bold
+highlight TabLine     guibg=#262838 guifg=#6b6b6b ctermbg=236 ctermfg=242
+highlight TabLineFill guibg=#26272f ctermbg=236
+
+" -----------------------------------------------------------
+"
+" THEME SETTINGS END
+"
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+"
+" SEARCH START
+"
+" -----------------------------------------------------------
+
+" Set absolute path to be able to search in all
+" sub directories.
 set path+=$PWD/**
 
 " Visual menu for command completion.
 set wildmenu
 
 " 'wildignore' only removes entries from the wildmenu
-" after entries have been found. It does not change search times.
+" after entries have been found. It does not change
+" search times.
 set wildignore+=**/node_modules/**,**/dist/**,**/.git/**,**/build/**,*.pyc,*.o
 
 " Make file search case insensitive.
@@ -255,12 +361,13 @@ set wildignorecase
 " don't need to specify it manually after <leader>sf.
 nnoremap <leader>sf :find 
 
-" Search in files with entering path.
+" Search for files with entering path.
 " This setting should contain space after :e so you
 " don't need to specify it manually after <leader>sp.
 nnoremap <leader>sp :e 
 
-" Automatically add file extensions when searching for files.
+" Automatically add file extensions when searching
+" for files.
 set suffixesadd+=.py,.js,.jsx,.ts,.tsx,.c,.h,.cpp,.json,.rs,.css,.scss
 
 " Set grep search tool to 'git grep'.
@@ -269,8 +376,12 @@ set gp=git\ grep\ -n
 " Search for sub string in all project files.
 nnoremap <leader>sg :grep ""<Left>
 
-" Search for current word under the cursor in all project files.
-nnoremap <leader>sgc :grep! <C-R><C-W>
+" Search for current word under the cursor in all
+" project files.
+nnoremap <leader>sgc :grep! -w -- <C-R><C-W>
+
+" Search for exact word (user-typed) in all project files.
+nnoremap <leader>sgw :grep! -w -- ""<Left>
 
 " Just press Enter after performing grep search and it
 " will automatically run :copen
@@ -280,23 +391,44 @@ augroup quickfix
     autocmd QuickFixCmdPost l* lwindow
 augroup END
 
-" ----------------------------------------
+" Put the cursor on a word and use * to highlight all exact
+" word matches in the current buffer.
+nnoremap * /\C\<\V<C-r><C-w>\><CR>
+
+" Replace the exact occurrences of the word under the cursor
+" in the current file with confirmation.
+nnoremap <leader>rw :%s/\C\<\V<C-r><C-w>\>//gc<Left><Left><Left>
+
+" -----------------------------------------------------------
 "
-" Resolving merge conflicts settings
+" SEARCH END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+"
+" GIT START
+"
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+" MERGE CONFLICTS START
+" -----------------------------------------------------------
 
 " 1. Merge branch into target branch.
-" 2. Then run 'git mergetool' manually from terminal or open vim and run <leader>dvm.
-" 3. To accept changes you can write ':diffget N' where N is the number of window with
-"    corresponding changes.
+" 2. Then run 'git mergetool' manually from terminal or open
+"    vim and run <leader>dvm.
+" 3. To accept changes you can write ':diffget N' where N is
+"    the number of window with corresponding changes.
 nnoremap <leader>dvm :!git mergetool<CR> 
 
-" ----------------------------------------
-"
-" Git file changes
-"
-" ----------------------------------------
+" -----------------------------------------------------------
+" MERGE CONFLICTS END
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+" CHANGED FILES START
+" -----------------------------------------------------------
 
 " Keep track of all changed file after we opened one.
 let s:git_changed_files = []
@@ -333,10 +465,10 @@ function! GitFileDiff()
     echo "Not in git repository"
     return
   endif
-
+  
   let f = substitute(expand('%:p'), root . '/', '', '')
   let cur_syntax = &syntax
-
+  
   vert new
   setlocal buftype=nofile
   setlocal bufhidden=wipe
@@ -345,16 +477,16 @@ function! GitFileDiff()
   execute 'file ' . fnameescape('HEAD:' . f)
   execute 'silent! read !git show HEAD:' . shellescape(f)
   1delete
-
+  
   if !empty(cur_syntax)
     execute 'setlocal syntax=' . cur_syntax
   endif
-
+  
   let b:lsp_diagnostics_enabled = 0
   if exists('*lsp#disable_diagnostics_for_buffer')
     call lsp#disable_diagnostics_for_buffer(bufnr('%'))
   endif
-
+  
   setlocal nomodifiable readonly
   diffthis
   wincmd p
@@ -362,22 +494,170 @@ function! GitFileDiff()
 endfunction
 nnoremap <leader>dvf :call GitFileDiff()<CR>
 
-" ----------------------------------------
+" -----------------------------------------------------------
+" CHANGED FILES END
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+" CHANGED LINES START
+" Show changed lines in the left gutter.
+" -----------------------------------------------------------
+
+" Define the sign symbols shown in the gutter. Guards
+" prevent redefining them if vimrc is re-sourced while
+" they already exist.
+if empty(sign_getdefined('GitSignAdd'))
+  sign define GitSignAdd    text=+ texthl=GitSignAdd
+endif
+if empty(sign_getdefined('GitSignChange'))
+  sign define GitSignChange text=~ texthl=GitSignChange
+endif
+if empty(sign_getdefined('GitSignDelete'))
+  sign define GitSignDelete text=- texthl=GitSignDelete
+endif
+
+" Set gutter symbol colors for the initial load.
+highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
+highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
+highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
+
+" Re-apply colors whenever the color scheme changes,
+" since colorscheme commands reset all highlight groups.
+autocmd ColorScheme * highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
+autocmd ColorScheme * highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
+autocmd ColorScheme * highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
+
+function! s:UpdateGitSigns()
+  let bufnr    = bufnr('%')
+  let filepath = expand('%:p')
+
+  " Clear all previously placed signs for this buffer
+  " before re-computing.
+  call sign_unplace('GitSigns', {'buffer': bufnr})
+
+  " Skip non-file buffers (e.g. netrw, help) and files
+  " outside a git repo.
+  if empty(filepath) || !filereadable(filepath)
+    return
+  endif
+  if empty(finddir('.git', fnamemodify(filepath, ':h') . ';'))
+    return
+  endif
+
+  " Get the unified diff between HEAD and the working copy.
+  let diff = systemlist('git diff HEAD -- ' . shellescape(filepath))
+  if empty(diff)
+    return
+  endif
+
+  " State variables for walking the diff hunk by hunk.
+  
+  " whether we are currently inside a hunk
+  let in_hunk    = 0
+  
+  " current line number in the new file
+  let cur_line   = 0
+  
+  " first line of the current hunk in the new file
+  let hunk_start = 0
+  
+  " line numbers of added lines collected in the hunk
+  let hunk_adds  = []
+  
+  " count of deleted lines in the hunk
+  let hunk_dels  = 0
+
+  " Append a sentinel hunk header so the last real hunk
+  " is always flushed.
+  for line in (diff + ['@@ @@'])
+    if line =~# '^@@'
+      " Flush the previous hunk: classify each added line
+      " as either a Change (it has a paired deletion) or
+      " a pure Add.
+      if in_hunk && (!empty(hunk_adds) || hunk_dels > 0)
+        let mods = min([len(hunk_adds), hunk_dels])
+        for i in range(len(hunk_adds))
+          let sname = i < mods ? 'GitSignChange' : 'GitSignAdd'
+          call sign_place(0, 'GitSigns', sname, bufnr, {'lnum': hunk_adds[i]})
+        endfor
+        " If there were more deletions than additions, mark
+        " the hunk start line with a Delete sign (the deleted
+        " lines have no new-file line).
+        if hunk_dels > len(hunk_adds)
+          call sign_place(0, 'GitSigns', 'GitSignDelete', bufnr, {'lnum': max([1, hunk_start])})
+        endif
+      endif
+
+      " Parse the new-file start line from the @@
+      " header, e.g. '@@ -1,4 +3,7 @@'.
+      let m = matchlist(line, '^@@ -\d\+\%(,\d*\)\? +\(\d\+\)\%(,\d*\)\? @@')
+      if !empty(m)
+        let in_hunk    = 1
+        let cur_line   = str2nr(m[1])
+        let hunk_start = cur_line
+        let hunk_adds  = []
+        let hunk_dels  = 0
+      endif
+
+    elseif in_hunk
+      " Walk each diff line: '+' is an addition, '-' is a
+      " deletion, ' ' is context (unchanged) — all advance
+      " the new-file line counter except deletions, which
+      " have no corresponding line in the new file.
+      if line[0] ==# '+'
+        call add(hunk_adds, cur_line)
+        let cur_line += 1
+      elseif line[0] ==# '-'
+        let hunk_dels += 1
+      elseif line[0] ==# ' '
+        let cur_line += 1
+      endif
+    endif
+  endfor
+endfunction
+
+" Refresh signs whenever the buffer is entered, saved, or
+" the cursor rests. timer_start(0, ...) defers the call
+" to after the current event completes, avoiding any flicker
+" or interference with other autocmds.
+augroup GitSigns
+  autocmd!
+  autocmd BufEnter,BufWritePost,CursorHold,CursorHoldI *
+        \ call timer_start(0, {-> s:UpdateGitSigns()})
+augroup END
+
+" Keep sign column always visible
+" Prevents text shifting left/right when Git signs appear/disappear.
+set signcolumn=yes
+
+" -----------------------------------------------------------
+" CHANGED LINES END
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
 "
-" File explorer settings
+" GIT END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+"
+" FILE EXPLORER START
+"
+" -----------------------------------------------------------
 
 " Open native Vim netrw file explorer.
 nnoremap <leader>e :Explore<CR>
 
-" Enable relative line numbers inside netrw so it's easier to jump to the
-" specific file/folder.
+" Enable relative line numbers inside netrw so it's easier
+" to jump to the specific file/folder.
 let g:netrw_bufsettings = 'noma nomod rnu nowrap ro nobl'
 
-" Copy or move marked files/dirs to a path you type (with completion).
-" If the destination already has an item with the same name, prompts to
-" overwrite, rename, skip, or cancel the whole operation.
+" Copy or move marked files/dirs to a path you type
+" (with completion).
+" If the destination already has an item with the same name,
+" prompts to overwrite, rename, skip, or cancel the whole
+" operation.
 function! s:MoveOrCopy(is_move)
   let l:marked = netrw#Expose("netrwmarkfilelist")
   if empty(l:marked)
@@ -516,40 +796,23 @@ let g:netrw_banner = 0
 " Tree-style directory listing instead of the flat list.
 " let g:netrw_liststyle = 3
 
-" Sets the split width percentage for Vexplore/Hexplore so it doesn't default to 50%.
+" Sets the split width percentage for Vexplore/Hexplore so
+" it doesn't default to 50%.
 " let g:netrw_winsize = 25
 
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Opened file settings
+" FILE EXPLORER END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
-" Split window vertically from the current file.
-nnoremap <leader>v :Vexplore<CR>
-
-" Split window horizontally from the current file.
-nnoremap <leader>h :Hexplore<CR>
-
-" Increase size of the current split window.
-nnoremap <leader>> :vertical resize +10<CR>
-
-" Decrease size of the current split window.
-nnoremap <leader>< :vertical resize -10<CR>
-
-" Make all split windows equal size.
-nnoremap <leader>= :wincmd =<CR>
-
-" Open a new tab from the current file.
-" You can jump to a specific tab with Ngt
-" where N is a number of tab.
-nnoremap <leader>t :tab split<CR>
-
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Previously opened files
+" VISITED FILES START
 "
-" ----------------------------------------
+" Opens a popup with all previously visited files.
+"
+" -----------------------------------------------------------
 
 function! ListFileBuffers()
   let buffers = getbufinfo({'buflisted': 1})
@@ -569,24 +832,76 @@ endfunction
 command! LsFiles call ListFileBuffers()
 nnoremap <leader>? :LsFiles<CR>
 
-" ----------------------------------------
+" -----------------------------------------------------------
 "
-" Language specific settings
+" VISITED FILES END
 "
-" ----------------------------------------
+" -----------------------------------------------------------
 
+" -----------------------------------------------------------
+"
+" LANGUAGE SPECIFIC START
+"
 " You need to install a language server for desired language
 " since Vim cannot support all languages out of the box.
-
+"
 " LSP configuration.
 " Install LSP plugin:
 " 1. mkdir -p ~/.vim/pack/lsp/start
 " 2. cd ~/.vim/pack/lsp/start
 " 3. git clone https://github.com/prabirshrestha/vim-lsp.git
+"
+" You can check more LSP specific actions in the vim-lsp
+" plugin documentation.
+"
+" -----------------------------------------------------------
 
-" Lsp for Rust.
-" Install rust-analyzer globally: rustup component add rust-analyzer
-" or in any other way that is applicable for your OS.
+" Go to definition. Place your cursor on variable/function
+" or anything else and use `gd`.
+nnoremap gd :LspDefinition<CR>
+
+" Show type information (hover).
+nnoremap K :LspHover<CR>
+
+" Code action. For example, if you have a missing import,
+" you can put your cursor over it and press <leader>ca
+" and select autoimport option.
+nnoremap <leader>ca :LspCodeAction<CR>
+
+" Make the code actions list to be a floating window.
+let g:lsp_code_action_ui = 'float'
+
+" Show LSP errors in the current file.
+nnoremap <leader>si :e!<CR>:LspDocumentDiagnostics<CR>
+
+" Apply formatting for the current file.
+nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
+
+" Disable LSP diagnostics while in insert mode.
+let g:lsp_diagnostics_echo_cursor = 0
+let g:lsp_diagnostics_float_cursor = 0
+
+" Disable code action indicator that appears on the left
+" side of the line (A>).
+let g:lsp_document_code_action_signs_enabled = 0
+
+" LSP autocompletion.
+set omnifunc=lsp#omni#complete
+set completeopt=menu,menuone,noselect
+
+" Trigger completion (Ctrl + x).
+inoremap <C-x> <C-x><C-o>
+
+" Confirm selection safely with Tab.
+inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
+
+" -----------------------------------------------------------
+" RUST START
+" -----------------------------------------------------------
+
+" Install rust-analyzer globally:
+" `rustup component add rust-analyzer` or in any other way
+" that is applicable for your OS.
 if executable('rust-analyzer')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'rust-analyzer',
@@ -595,8 +910,23 @@ if executable('rust-analyzer')
       \ })
 endif
 
-" Lsp for JS/TS.
-" Install language server globally: npm install -g typescript typescript-language-server.
+" Ctrl + p alias for `println!()` macro.
+inoremap <C-p> println!()<Left>
+
+" Three slashes comment block. Make it look like a
+" default comment color.
+highlight link rustCommentLineDoc Comment
+
+" -----------------------------------------------------------
+" RUST END
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+" JS/TS START
+" -----------------------------------------------------------
+
+" Install language server globally:
+" `npm install -g typescript typescript-language-server`
 if executable('typescript-language-server')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'ts-lsp',
@@ -605,11 +935,25 @@ if executable('typescript-language-server')
       \ })
 endif
 
-" Lsp for Python.
-" Install language server globally: pip install 'python-lsp-server[all]'
+" Use 2 spaces for JS/TS and their JSX variants.
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact setlocal tabstop=2 softtabstop=2 shiftwidth=2
+
+" Ctrl + l alias for `console.log()`
+inoremap <C-l> console.log()<Left>
+
+" -----------------------------------------------------------
+" JS/TS END
+" -----------------------------------------------------------
+
+" -----------------------------------------------------------
+" PYTHON START
+" -----------------------------------------------------------
+
+" Install language server globally:
+" `pip install 'python-lsp-server[all]'`
 "
-" Add this after allowlist if you want to disable default pylsp linter rules in case
-" you use something else like ruff.
+" Add this after allowlist if you want to disable default
+" pylsp linter rules in case you use something else like ruff.
 "\ 'workspace_config': {
 "\     'pylsp': {
 "\         'plugins': {
@@ -640,230 +984,23 @@ if executable('pylsp')
         \ })
 endif
 
-" Go to definition. Place your cursor on variable/function or anything else
-" and run this command.
-nnoremap gd :LspDefinition<CR>
+" -----------------------------------------------------------
+" PYTHON END
+" -----------------------------------------------------------
 
-" Show type information (hover).
-nnoremap K :LspHover<CR>
+" -----------------------------------------------------------
+" MAKEFILE START
+" -----------------------------------------------------------
 
-" Code action. For example, if you have a missing import, you can
-" put your cursor over it and press <leader>ca and select autoimport option.
-nnoremap <leader>ca :LspCodeAction<CR>
-" Make the code actions list to be a floating window.
-let g:lsp_code_action_ui = 'float'
+" Use tabs since required.
+autocmd FileType make setlocal noexpandtab
 
-" Show LSP errors in the current file.
-nnoremap <leader>si :e!<CR>:LspDocumentDiagnostics<CR>
+" -----------------------------------------------------------
+" MAKEFILE END
+" -----------------------------------------------------------
 
-" Apply formatting for the current file.
-nnoremap <leader>fm :w<CR>:e!<CR>:LspDocumentFormat<CR>
-
-" Disable LSP diagnostics while in insert mode.
-let g:lsp_diagnostics_echo_cursor = 0
-let g:lsp_diagnostics_float_cursor = 0
-
-" Disable code action indicator that appears on the left side of the line (A>).
-let g:lsp_document_code_action_signs_enabled = 0
-
-" LSP autocompletion.
-set omnifunc=lsp#omni#complete
-set completeopt=menu,menuone,noselect
-" Trigger completion.
-inoremap <C-x> <C-x><C-o>
-" Confirm selection safely with Tab.
-inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
-
-" You can check more LSP specific actions in the vim-lsp plugin documentation.
-
-" =============================================================
-" COLOR SCHEME OVERRIDE START
-" =============================================================
-
-" THEME AGNOSTIC START
-
-" Remove color from spelling mistake words and make them default color and underlined.
- augroup SpellColorFix
- autocmd!
-     autocmd ColorScheme * highlight! clear SpellBad
-     autocmd ColorScheme * highlight! clear SpellCap
-     autocmd ColorScheme * highlight! clear SpellRare
-     autocmd ColorScheme * highlight! clear SpellLocal
-     autocmd ColorScheme * highlight! SpellBad
-        \ term=underline cterm=underline gui=underline ctermfg=NONE
-        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
-     autocmd ColorScheme * highlight! SpellCap
-        \ term=underline cterm=underline gui=underline ctermfg=NONE
-        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
-     autocmd ColorScheme * highlight! SpellRare
-        \ term=underline cterm=underline gui=underline ctermfg=NONE
-        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
-     autocmd ColorScheme * highlight! SpellLocal
-        \ term=underline cterm=underline gui=underline ctermfg=NONE
-        \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
- augroup END
- highlight! clear SpellBad
- highlight! SpellBad
-    \ term=underline cterm=underline gui=underline ctermfg=NONE
-    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
- highlight! SpellCap
-    \ term=underline cterm=underline gui=underline ctermfg=NONE
-    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
- highlight! SpellRare
-    \ term=underline cterm=underline gui=underline ctermfg=NONE
-    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
- highlight! SpellLocal
-    \ term=underline cterm=underline gui=underline ctermfg=NONE
-    \ ctermbg=NONE guifg=NONE guibg=NONE guisp=NONE
-
-" THEME AGNOSTIC END
-
-" THEME SPECIFIC START (DARK)
-
-" Override the background color.
-highlight Normal guibg=#1f2029 ctermbg=235
-
-" Override status line background color for active window.
-highlight StatusLine guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=15
-
-" Override status line background color for inactive window.
-highlight StatusLineNC guibg=#1d1e27 guifg=#555555 ctermbg=234 ctermfg=240
-
-" Popup window styles
-highlight Pmenu guibg=#2b2c3a guifg=#939393 ctermbg=17 ctermfg=246
-highlight PmenuSel guibg=#3d3f52 guifg=#ffffff ctermbg=60 ctermfg=15 gui=bold
-highlight PmenuSbar guibg=#1d1e27 ctermbg=234
-highlight PmenuThumb guibg=#555555 ctermbg=240
-
-highlight VertSplit guibg=#1f2029 guifg=#3d3f52 ctermbg=235 ctermfg=60
-
-" Tab line styles
-highlight TabLineSel  guibg=#3a3c4f guifg=#a8a8a8 ctermbg=60 ctermfg=15 gui=bold
-highlight TabLine     guibg=#262838 guifg=#6b6b6b ctermbg=236 ctermfg=242
-highlight TabLineFill guibg=#26272f ctermbg=236
-
-" THEME SPECIFIC END (DARK)
-
-" LANGUAGE SPECIFIC START
-
-" Rust
-" Three slashes comment block. Make it look like a default comment color.
-highlight link rustCommentLineDoc Comment
-
+" -----------------------------------------------------------
+"
 " LANGUAGE SPECIFIC END
-
-" =============================================================
-" COLOR SCHEME OVERRIDE END
-" =============================================================
-
-" ----------------------------------------
 "
-" Git signs
-"
-" Show changed lines in the left gutter.
-"
-" ----------------------------------------
-
-" Define the sign symbols shown in the gutter. Guards prevent redefining
-" them if vimrc is re-sourced while they already exist.
-if empty(sign_getdefined('GitSignAdd'))
-  sign define GitSignAdd    text=+ texthl=GitSignAdd
-endif
-if empty(sign_getdefined('GitSignChange'))
-  sign define GitSignChange text=~ texthl=GitSignChange
-endif
-if empty(sign_getdefined('GitSignDelete'))
-  sign define GitSignDelete text=- texthl=GitSignDelete
-endif
-
-" Set gutter symbol colors for the initial load.
-highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
-highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
-highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
-
-" Re-apply colors whenever the color scheme changes, since colorscheme
-" commands reset all highlight groups.
-autocmd ColorScheme * highlight GitSignAdd    guifg=#50fa7b ctermfg=84  guibg=#1f2029 ctermbg=235
-autocmd ColorScheme * highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
-autocmd ColorScheme * highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
-
-function! s:UpdateGitSigns()
-  let bufnr    = bufnr('%')
-  let filepath = expand('%:p')
-
-  " Clear all previously placed signs for this buffer before re-computing.
-  call sign_unplace('GitSigns', {'buffer': bufnr})
-
-  " Skip non-file buffers (e.g. netrw, help) and files outside a git repo.
-  if empty(filepath) || !filereadable(filepath)
-    return
-  endif
-  if empty(finddir('.git', fnamemodify(filepath, ':h') . ';'))
-    return
-  endif
-
-  " Get the unified diff between HEAD and the working copy.
-  let diff = systemlist('git diff HEAD -- ' . shellescape(filepath))
-  if empty(diff)
-    return
-  endif
-
-  " State variables for walking the diff hunk by hunk.
-  let in_hunk    = 0  " whether we are currently inside a hunk
-  let cur_line   = 0  " current line number in the new file
-  let hunk_start = 0  " first line of the current hunk in the new file
-  let hunk_adds  = [] " line numbers of added lines collected in the hunk
-  let hunk_dels  = 0  " count of deleted lines in the hunk
-
-  " Append a sentinel hunk header so the last real hunk is always flushed.
-  for line in (diff + ['@@ @@'])
-    if line =~# '^@@'
-      " Flush the previous hunk: classify each added line as either a
-      " Change (it has a paired deletion) or a pure Add.
-      if in_hunk && (!empty(hunk_adds) || hunk_dels > 0)
-        let mods = min([len(hunk_adds), hunk_dels])
-        for i in range(len(hunk_adds))
-          let sname = i < mods ? 'GitSignChange' : 'GitSignAdd'
-          call sign_place(0, 'GitSigns', sname, bufnr, {'lnum': hunk_adds[i]})
-        endfor
-        " If there were more deletions than additions, mark the hunk start
-        " line with a Delete sign (the deleted lines have no new-file line).
-        if hunk_dels > len(hunk_adds)
-          call sign_place(0, 'GitSigns', 'GitSignDelete', bufnr, {'lnum': max([1, hunk_start])})
-        endif
-      endif
-
-      " Parse the new-file start line from the @@ header, e.g. '@@ -1,4 +3,7 @@'.
-      let m = matchlist(line, '^@@ -\d\+\%(,\d*\)\? +\(\d\+\)\%(,\d*\)\? @@')
-      if !empty(m)
-        let in_hunk    = 1
-        let cur_line   = str2nr(m[1])
-        let hunk_start = cur_line
-        let hunk_adds  = []
-        let hunk_dels  = 0
-      endif
-
-    elseif in_hunk
-      " Walk each diff line: '+' is an addition, '-' is a deletion,
-      " ' ' is context (unchanged) — all advance the new-file line counter
-      " except deletions, which have no corresponding line in the new file.
-      if line[0] ==# '+'
-        call add(hunk_adds, cur_line)
-        let cur_line += 1
-      elseif line[0] ==# '-'
-        let hunk_dels += 1
-      elseif line[0] ==# ' '
-        let cur_line += 1
-      endif
-    endif
-  endfor
-endfunction
-
-" Refresh signs whenever the buffer is entered, saved, or the cursor rests.
-" timer_start(0, ...) defers the call to after the current event completes,
-" avoiding any flicker or interference with other autocmds.
-augroup GitSigns
-  autocmd!
-  autocmd BufEnter,BufWritePost,CursorHold,CursorHoldI *
-        \ call timer_start(0, {-> s:UpdateGitSigns()})
-augroup END
+" -----------------------------------------------------------

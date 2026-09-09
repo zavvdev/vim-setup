@@ -18,7 +18,9 @@ Minimal setup.
 
 6. Run `git config --global mergetool.keepBackup false` to disable backup files.
 
-7. LSP requires plugin installation. If you want LSP support, see the [LSP section](https://github.com/zavvdev/vim-setup/tree/main?tab=readme-ov-file#lsp). Otherwise, remove the 'Language specific settings' section from your _.vimrc_ file.
+7. LSP requires plugin installation. If you want LSP support, see the [LSP section](#lsp).
+Otherwise, remove the LSP related settings under 'LANGUAGE SPECIFIC START' section
+from your _.vimrc_ file.
 
 ## Keybindings
 
@@ -65,15 +67,17 @@ Run these commands from the file explorer:
 
 #### Global Search
 
-1. Search in files: `Leader s f`.
+1. Search for files: `Leader s f`.
 
-2. Search in files by specifying a path: `Leader s p`.
+2. Search for files by specifying a path: `Leader s p`.
 
-3. Search in files using grep: `Leader s g`, type something, then press Enter.
+3. Search for sub string in all project files: `Leader s g`, type something, then press Enter.
 
 4. Search for the word under the cursor across all files: `Leader s g c`, then press Enter.
 
-5. Show a list of recently opened files: `Leader ?`.
+5. Search for the typed word across all files: `Leader s g w`, then press Enter.
+
+6. Show a list of recently opened files: `Leader ?`.
 
 ### File
 
@@ -393,6 +397,8 @@ See the vim-lsp plugin documentation for additional actions.
 `:%s/old/new/gI` - replace all occurrences, case-sensitive.
 
 `:%s/old/new/gIc` - replace all occurrences, case-sensitive, with confirmation.
+
+`Leader r w` - replace the exact occurrences of the word under the cursor in the current file with confirmation.
 
 ---
 
