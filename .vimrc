@@ -924,16 +924,52 @@ highlight link rustCommentLineDoc Comment
 " -----------------------------------------------------------
 " JS/TS START
 " -----------------------------------------------------------
+"
+" Two setups below, only ONE should be active at a time - comment out
+" whichever you're not using for the project you have open in vim.
 
-" Install language server globally:
-" `npm install -g typescript typescript-language-server`
-if executable('typescript-language-server')
+" ---- Active: TypeScript 7 (native `tsc --lsp`) projects, e.g. `requests` ----
+"
+" TypeScript 7 is the new native (Go-ported) preview compiler. It ships no
+" `tsserverlibrary.js` (only a `tsc` binary), so classic
+" `typescript-language-server` can't load it - but TS7's `tsc` binary
+" itself has a built-in `--lsp --stdio` mode that speaks LSP directly,
+" faster than the classic server. This uses the project's own local
+" `node_modules/.bin/tsc` (resolved relative to vim's cwd), so it always
+" matches that project's TypeScript version and tsconfig.json.
+"
+" `g:lsp_use_native_client` is required: `tsc --lsp` sends
+" `workspace/configuration`-style requests with string ids (e.g. "ts1"),
+" which vim's classic (non-native) LSP channel can't reply to (see
+" vim/vim#14091). The native client plus a recent enough vim-lsp (which
+" now handles `client/registerCapability` and string ids -
+" github.com/prabirshrestha/vim-lsp/issues/1684, merged as of #1685/#1686)
+" are both needed for this to work.
+let g:lsp_use_native_client = 1
+
+if filereadable(getcwd() . '/node_modules/.bin/tsc')
   autocmd User lsp_setup call lsp#register_server({
-      \ 'name': 'ts-lsp',
-      \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
-      \ 'allowlist': ['javascript','javascriptreact','typescript','typescriptreact'],
-      \ })
+      \ 'name': 'ts-lsp',
+      \ 'cmd': {server_info->[getcwd() . '/node_modules/.bin/tsc', '--lsp', '--stdio']},
+      \ 'allowlist': ['javascript','javascriptreact','typescript','typescriptreact'],
+      \ })
 endif
+
+" ---- Alternative: classic TypeScript (<7) projects ----
+" Install language server globally:
+" `npm install -g typescript-language-server`
+" `typescript-language-server` resolves the project's own local (classic)
+" `typescript` from its node_modules automatically - no extra config
+" needed. Install it globally with:
+" `npm install -g typescript-language-server`
+"
+" if executable('typescript-language-server')
+"   autocmd User lsp_setup call lsp#register_server({
+"       \ 'name': 'ts-lsp',
+"       \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
+"       \ 'allowlist': ['javascript','javascriptreact','typescript','typescriptreact'],
+"       \ })
+" endif
 
 " Use 2 spaces for JS/TS and their JSX variants.
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact setlocal tabstop=2 softtabstop=2 shiftwidth=2
