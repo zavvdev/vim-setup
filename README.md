@@ -73,9 +73,9 @@ Run these commands from the file explorer:
 
 3. Search for sub string in all project files: `Leader s g`, type something, then press Enter.
 
-4. Search for the word under the cursor across all files: `Leader s g c`, then press Enter.
+4. Search for the word under the cursor across all files: `Leader s c`, then press Enter.
 
-5. Search for the typed word across all files: `Leader s g w`, then press Enter.
+5. Search for the typed word across all files: `Leader s w`, then press Enter.
 
 6. Show a list of recently opened files: `Leader ?`.
 
@@ -116,11 +116,15 @@ last line selection covers all prefix, press `x`.
 
 17. Refresh the current file: `Leader rr`.
 
+18. Comment/uncomment code block: `gc`
+
+19. Comment/uncomment single line: `gcc`
+
 ### Code Aliases
 
-1. `console.log()` alias: `Ctrl l` from insert mode.
+1. `console.log()` alias: `Ctrl l` from insert mode (JS/TS files).
 
-2. `println!()` alias: `Ctrl p` from insert mode.
+2. `println!()` alias: `Ctrl p` from insert mode (Rust files).
 
 ### Git
 
@@ -138,17 +142,17 @@ If a merge has conflicts:
 
 6. Put the difference to the other buffer. Place your cursor on the conflict and run: `dp`.
 
-7. Use `:diffget N`, where N is the number of the buffer with the desired changes, to accept those changes.
+7. Use `:diffgetN`, where N is the number of the buffer with the desired changes, to accept those changes.
 
 List uncommitted files:
 
-1. Use `Leader d v` to open a list of files that have been changed but not yet committed.
+1. Use `Leader d l` to open a list of files that have been changed but not yet committed.
 
 Diffs:
 
 1. Show diff for the current file: `Leader d v f`.
 
-2. Revert all changes for the current file: `Leader d v r`.
+2. Revert all changes for the current file: `Leader d v r` (will be prompted)
 
 ## LSP
 
