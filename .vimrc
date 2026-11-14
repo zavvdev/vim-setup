@@ -29,11 +29,12 @@ let s:popup_list_max_width = 70
 "
 " =============================================================
 
-function! s:TruncatePath(path) abort
-	if strchars(a:path) <= s:popup_list_max_width
- 		return a:path
- 	endif
- 	return '…' . strcharpart(a:path, strchars(a:path) - s:popup_list_max_width + 1)
+function! s:TruncatePath(path, ...) abort
+    let w = a:0 ? a:1 : s:popup_list_max_width
+    if strchars(a:path) <= w
+        return a:path
+    endif
+    return '…' . strcharpart(a:path, strchars(a:path) - w + 1)
 endfunction
 
 function! s:ShowPopupMenu(title, items, callback) abort
@@ -377,6 +378,12 @@ function! s:Highlights() abort
     highlight GitSignChange guifg=#f1fa8c ctermfg=228 guibg=#1f2029 ctermbg=235
     highlight GitSignDelete guifg=#ff5555 ctermfg=203 guibg=#1f2029 ctermbg=235
 
+    " Popup markers: same foregrounds as the gutter, no background,
+    " so the popup's own background and selected row show through.
+    highlight GitPopupAdd guifg=#50fa7b ctermfg=84
+    highlight GitPopupChange guifg=#f1fa8c ctermfg=228
+    highlight GitPopupDelete guifg=#ff5555 ctermfg=203
+
     highlight link rustCommentLineDoc Comment
 endfunction
 autocmd vimrc ColorScheme * call s:Highlights()
@@ -545,17 +552,46 @@ function! s:OpenGitChangedFileFromPopup(id, result) abort
     endif
 endfunction
 
+" Marker and highlight group per change type.
+let s:git_status_marks = {
+    \ 'A': ['+', 'GitPopupAdd'],
+    \ 'M': ['~', 'GitPopupChange'],
+    \ 'D': ['-', 'GitPopupDelete']}
+
+" Text property types let popup lines carry highlighting. They need the
+" highlight groups to exist, so this must stay below :colorscheme.
+for s:g in ['GitPopupAdd', 'GitPopupChange', 'GitPopupDelete']
+    if empty(prop_type_get(s:g))
+        call prop_type_add(s:g, {'highlight': s:g})
+    endif
+endfor
+
+function! s:ChangedFileItem(path, code) abort
+    let [mark, hl] = get(s:git_status_marks, a:code, s:git_status_marks.M)
+    return {'text': mark . ' ' . s:TruncatePath(a:path, s:popup_list_max_width - 2),
+        \ 'props': [{'col': 1, 'length': 1, 'type': hl}]}
+endfunction
+
 " Staged + unstaged + untracked, all root-relative.
 function! GitChangedFilesPopup() abort
     let s:git_root = s:GitRoot()
     if empty(s:git_root) | echo 'Not in git repository' | return | endif
     let r = shellescape(s:git_root)
-    let changed = systemlist('git -C ' . r . ' diff --name-only HEAD')
-    if v:shell_error | let changed = [] | endif " repo without commits
-    let s:git_changed_files = uniq(sort(changed +
-                \ systemlist('git -C ' . r . ' ls-files --others --exclude-standard')))
-    let display = map(copy(s:git_changed_files), {_, v -> s:TruncatePath(v)})
-    call s:ShowPopupMenu('Changed files', display, function('s:OpenGitChangedFileFromPopup'))
+
+    " path -> status letter. Untracked files count as added.
+    let status = {}
+    let lines = systemlist('git -C ' . r . ' diff --name-status --no-renames HEAD')
+    if v:shell_error | let lines = [] | endif " repo without commits
+    for l in lines
+        if len(l) > 2 | let status[l[2:]] = l[0] | endif
+    endfor
+    for f in systemlist('git -C ' . r . ' ls-files --others --exclude-standard')
+        let status[f] = 'A'
+    endfor
+
+    let s:git_changed_files = sort(keys(status))
+    let items = map(copy(s:git_changed_files), {_, f -> s:ChangedFileItem(f, status[f])})
+    call s:ShowPopupMenu('Changed files', items, function('s:OpenGitChangedFileFromPopup'))
 endfunction
 nnoremap <leader>dl <Cmd>call GitChangedFilesPopup()<CR>
 
