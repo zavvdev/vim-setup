@@ -870,6 +870,7 @@ nnoremap <leader>? :LsFiles<CR>
 " =============================================================
 
 let g:lsp_use_native_client = 1
+let g:lsp_async_completion = 1
 
 " Make the code actions list to be a floating window.
 let g:lsp_code_action_ui = 'float'
